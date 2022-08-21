@@ -2642,13 +2642,13 @@ for iXM in range(1):
 
 				make_cavity_params_tm_refl(param2)
 
-				param2['array_orig_x'] = chipCenterX + 50e4 * iX  # SC changing from 600 to 800, easier for cleaving
-				param2['array_orig_y'] = chipCenterY + 500e3 * iY + 300e3*((iY-1)%2) #chipCenterY + 350e3 * iY -50e3*iY
+				param2['array_orig_x'] = chipCenterX + 348e3 * iX  # SC changing from 600 to 800, easier for cleaving
+				param2['array_orig_y'] = chipCenterY + 190e3 * iY  #chipCenterY + 350e3 * iY -50e3*iY
 				# if iX==0:
 				# 	param2['array_orig_y'] = chipCenterY + 350e3 * iY -50e3*iY
 
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('SOI_2022_08_18_test_ca.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('change_device_sweep_spacing.gds', unit=1.0e-9, precision=1.0e-10)
 	
