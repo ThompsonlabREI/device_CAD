@@ -2128,6 +2128,10 @@ startsweep = 1 + xin
 endsweep = 1.03+xin
 
 #CaWO4 PhC hole scale
+
+num_rows = 11 #repetition in y
+num_cols = 7 #reptition in x
+
 param['start_sweep_GC10_CaWO4'] = 0.960
 param['end_sweep_GC10_CaWO4'] = 1.2
 
@@ -2137,7 +2141,8 @@ param['end_sweep_GC10_CaWO4'] = 1.2
 #xin  used to calculate the scaling factor of the PhC hole sizes hx,hy; hx = startsweep*hx_0; hy = startsweep*hy_0
 #xin is used for central PhC in meander, if we use 4 columns then  xin will be 4 element array
 #xin = numpy.linspace(-0.1 -0.004*10 , 0, 4)
-xin = numpy.linspace(-0.005*8, 0.005*4, 4) #expected shift of centr. wav. -8 nm -4 nm 0 4nm
+# xin = numpy.linspace(-0.005*8, 0.005*4, 4) #expected shift of centr. wav. -8 nm -4 nm 0 4nm
+xin = numpy.linspace(-0.005*8, 0.005*4, num_cols)
 #startsweep will be the scaling factor for the smallest holes in the meander
 startsweep =(1 +xin)*0.93
 #endsweep will be the scaling factor for the biggest holes in the meander
@@ -2151,6 +2156,16 @@ endsweep_CaWO4=endsweep
 # print ("YSOend" + str(endsweep))
 print ("calciumstart" + str(startsweep_CaWO4))
 print ("calciumend" + str(endsweep_CaWO4))
+
+mirror_num = 10
+mirror_list = mirror_num*numpy.ones(num_rows, dtype=int) #number of mirrors is held constant for all the PhCs
+
+#assume cavity list is the same for now
+cavity_num = 14
+cavity_list = cavity_num*numpy.ones(num_rows, dtype=int)
+
+grating_taper_length_nm = 185000
+grating_taper_length_list = grating_taper_length_nm*numpy.ones(num_cols, dtype=int)
 
 param['hole_size_scale_meander_no_sweep']=1.088 # scale in case of no sweep for meander
 
@@ -2355,12 +2370,8 @@ for iXM in range(1):
 
 		n_tm_list = [0]
 
-		cavity_list = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-		cavity_list_CaWO4 =[14, 14, 14, 14, 14, 14, 14, 14, 14, 14]
+		cavity_list_CaWO4 =cavity_list
 
-		num_rows = 10
-
-		grating_taper_length_list = [185000,185000,185000,185000] #2D PhC requires 10um shorter GC, adding this 10 um to waveguide taper
 		grating_airholescale_list1 = numpy.linspace(-50, 0, param['num_beams'])	# SC air hole diameter sweep
 		grating_airholescale_list2 = numpy.linspace(-50, 0, param['num_beams'])  # SC air hole diameter sweep
 		constgrating_airholescale_list = [5,5]   # air hole diameter sweep constant
@@ -2371,17 +2382,18 @@ for iXM in range(1):
 
 		# grating_taper_length_list=[10000,25000,50000,100000,150000]
 		# notch_depth_list = [250,260,270,280,290,250,260,270,280,290]
-		num_cols = len(grating_taper_length_list)
+
 		blade_width_list = [200]
-		for iX in range(4): #4
+		for iX in range(num_cols): #4
 			if iX==0:
 				y_start=0 #0
-				off_in_end=4#4
+				# off_in_end=4#4
 			else:
 				y_start=0
-				off_in_end = 4#4
+				# off_in_end = 4#4
 
-			for iY in range(y_start, num_rows-off_in_end):
+			# for iY in range(y_start, num_rows-off_in_end):
+			for iY in range(y_start, num_rows):
 				# now make a specific design
 				param2 = copy(param)
 
@@ -2400,12 +2412,10 @@ for iXM in range(1):
 
 				param2['hoste'] = 3
 
-				mirror_list = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
-				mirror_listCaWO4 = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+				mirror_listCaWO4 = mirror_list
 
 				if param2['meander']== True:
-					mirror_list = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-					mirror_listCaWO4 = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+					mirror_listCaWO4 = mirror_list
 
 					if param2['hoste'] == 1:
 						param2['start_sweep_meander'] = startsweep[iX]
@@ -2646,9 +2656,9 @@ for iXM in range(1):
 				param2['array_orig_y'] = chipCenterY + 190e3 * iY  #chipCenterY + 350e3 * iY -50e3*iY
 				# if iX==0:
 				# 	param2['array_orig_y'] = chipCenterY + 350e3 * iY -50e3*iY
-
+				print("writing sweep combo x" + str(iX) + "y" + str(iY))
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('change_device_sweep_spacing.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('tried_updating_with_num_rows_diff.gds', unit=1.0e-9, precision=1.0e-10)
 	
