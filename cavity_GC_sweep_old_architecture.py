@@ -2129,8 +2129,14 @@ endsweep = 1.03+xin
 
 #CaWO4 PhC hole scale
 
-num_rows = 11 #repetition in y
-num_cols = 7 #reptition in x
+num_rows = 6 #repetition in y
+num_cols = 5 #reptition in x
+
+device_y_um = 108
+device_y_nm = device_y_um * 1000
+
+device_x_and_spacing_x_um = 347
+device_x_and_spacing_x_nm = device_x_and_spacing_x_um * 1000
 
 param['start_sweep_GC10_CaWO4'] = 0.960
 param['end_sweep_GC10_CaWO4'] = 1.2
@@ -2652,13 +2658,16 @@ for iXM in range(1):
 
 				make_cavity_params_tm_refl(param2)
 
-				param2['array_orig_x'] = chipCenterX + 348e3 * iX  # SC changing from 600 to 800, easier for cleaving
-				param2['array_orig_y'] = chipCenterY + 190e3 * iY  #chipCenterY + 350e3 * iY -50e3*iY
+				param2['array_orig_x'] = chipCenterX + device_x_and_spacing_x_nm * iX  # SC changing from 600 to 800, easier for cleaving
+
+				y_offset = iY*num_cols*device_y_nm
+				# param2['array_orig_y'] = chipCenterY + 190e3 * iY  #chipCenterY + 350e3 * iY -50e3*iY
+				param2['array_orig_y'] = chipCenterY + iX*device_y_nm + y_offset
 				# if iX==0:
 				# 	param2['array_orig_y'] = chipCenterY + 350e3 * iY -50e3*iY
-				print("writing sweep combo x" + str(iX) + "y" + str(iY))
+				print("writing sweep combo x" + str(param2['array_orig_x']) + "y" + str(param2['array_orig_y']))
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('tried_updating_with_num_rows_diff.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('5_by_6_spacing_adjusted.gds', unit=1.0e-9, precision=1.0e-10)
 	
