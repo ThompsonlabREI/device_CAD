@@ -2163,6 +2163,8 @@ endsweep_CaWO4=endsweep
 print ("calciumstart" + str(startsweep_CaWO4))
 print ("calciumend" + str(endsweep_CaWO4))
 
+target_GC_center_lambda_nm = 1544
+
 mirror_num = 10
 mirror_list = mirror_num*numpy.ones(num_rows, dtype=int) #number of mirrors is held constant for all the PhCs
 
@@ -2473,8 +2475,8 @@ for iXM in range(1):
 
 				if param2['hoste'] == 3:  # 3==CaWO4
 					# pass
-					param2['wg'] = 500
-					param2["resonance"] = 1532+12
+					param2['wg'] = 500 #figure out what this waveguide thing does
+					param2["resonance"] = target_GC_center_lambda_nm
 					param2["2-axes"] = True
 					param2['cavity_len'] = cavity_list_CaWO4[iY]
 					param2['mirror_len'] = mirror_listCaWO4[iY]
@@ -2488,13 +2490,13 @@ for iXM in range(1):
 					param2['y_spacing_between_wabguides'] = 00
 
 					param2['num_grating_periods_x'] = 20
-					param2['num_grating_periods_y'] = 32  # SC total grating y width 12.6 um, maximum overlap with fiber
-					param2['grating_period_x_start'] = 670
-					param2['grating_pad_width'] = 12600
-					param2['grating_first_index'] = 2.6
-					param2['grating_delta_index'] = 0.03
+					param2['num_grating_periods_y'] = 31  # SC total grating y width 12.6 um, maximum overlap with fiber
+					param2['grating_period_x_start'] = 700
+					param2['grating_pad_width'] = 12600 #assuming this is the same as the taperendwidth parameter in the lumerical geometry file
+					param2['grating_first_index'] = 2.55
+					param2['grating_delta_index'] = 0.02
 					param2['phaseFactor'] = 0.582
-					param2['a_2DPhC'] = 225.98
+					param2['a_2DPhC'] = 232.61 #looks like this is the same as the
 					param2['grating_pad_length'] = 17000
 					param2['grating_pad_buffer'] = (param2['grating_pad_width'] - (param2['num_grating_periods_y'] - 1) * param2['a_2DPhC'] * numpy.sqrt(3)) / 2.0
 					param2['grating_pad_offset'] = 2000
@@ -2504,20 +2506,20 @@ for iXM in range(1):
 					#GC sweep parameters
 					#iY is counted from bottom to top
 					if param2['meander'] == True:
-						# constgrating_airholescale_list = [-10, -10]
+						constgrating_airholescale_list = [0, 0]
 
-						if iY == 0:
-							constgrating_airholescale_list = [10, 10]
-						if iY == 1:
-							constgrating_airholescale_list = [0, 0]
-						if iY == 2:
-							constgrating_airholescale_list = [-10, -10]
-						if iY == 3:
-							constgrating_airholescale_list = [-20, -20]
-						if iY == 4:
-							constgrating_airholescale_list = [-30, -30]
-						if iY == 5:
-							constgrating_airholescale_list = [-40, -40]
+						# if iY == 0:
+						# 	constgrating_airholescale_list = [10, 10]
+						# if iY == 1:
+						# 	constgrating_airholescale_list = [0, 0]
+						# if iY == 2:
+						# 	constgrating_airholescale_list = [-10, -10]
+						# if iY == 3:
+						# 	constgrating_airholescale_list = [-20, -20]
+						# if iY == 4:
+						# 	constgrating_airholescale_list = [-30, -30]
+						# if iY == 5:
+						# 	constgrating_airholescale_list = [-40, -40]
 
 				grating_x_num = range(param2['num_grating_periods_x']) #range starts 0,1,2...num_grating_period_x-1
 				# air_hole_diameter_list_base = [-0.09594*param2['a_2DPhC']*(param2['grating_first_index']-param2['grating_delta_index']*x)**4 + 0.9546*param2['a_2DPhC']*(param2['grating_first_index']-param2['grating_delta_index']*x)**3 - 3.586*param2['a_2DPhC']*(param2['grating_first_index']-param2['grating_delta_index']*x)**2 + 5.542*param2['a_2DPhC']*(param2['grating_first_index']-param2['grating_delta_index']*x) - 1.931*param2['a_2DPhC'] for x in grating_x_num]
@@ -2658,7 +2660,7 @@ for iXM in range(1):
 
 				make_cavity_params_tm_refl(param2)
 
-				param2['array_orig_x'] = chipCenterX + device_x_and_spacing_x_nm * iX  # SC changing from 600 to 800, easier for cleaving
+				param2['array_orig_x'] = chipCenterX + device_x_and_spacing_x_nm * iX
 
 				y_offset = iY*num_cols*device_y_nm
 				# param2['array_orig_y'] = chipCenterY + 190e3 * iY  #chipCenterY + 350e3 * iY -50e3*iY
@@ -2669,5 +2671,5 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('5_by_6_spacing_adjusted.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('compare_GC_to_lumerical.gds', unit=1.0e-9, precision=1.0e-10)
 	
