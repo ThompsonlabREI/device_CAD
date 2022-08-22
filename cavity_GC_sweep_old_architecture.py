@@ -313,7 +313,8 @@ def write_beams(cell, param):
 
 			# Now write the 2D triangular air holes for the coupling grating
 			# air_hole_diameter_list = numpy.asarray(air_hole_diameter_list_base) + grating_airholescale_list[iB] / (param['num_grating_periods_x'] - 1.0) * numpy.asarray(range(param['num_grating_periods_x']))#SC AirGapwidth linear Offset
-			air_hole_diameter_list = (numpy.asarray(air_hole_diameter_list_base) + constgrating_airholescale_list[iB])/1.13 # SO 2021
+			# air_hole_diameter_list = (numpy.asarray(air_hole_diameter_list_base) + constgrating_airholescale_list[iB])/1.13 # SO 2021
+			air_hole_diameter_list = numpy.asarray(air_hole_diameter_list_base) + constgrating_airholescale_list[iB] # take off the 1.13 scaling factor so that GC hole sizes match lumerical
 
 			grating_periods_x_list = numpy.zeros(len(air_hole_diameter_list)) + param['grating_period_x_start']
 			for iG in range(1, len(air_hole_diameter_list), 1):
@@ -2671,5 +2672,5 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('compare_GC_to_lumerical.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('scale_factor_GC_hole_size_removed.gds', unit=1.0e-9, precision=1.0e-10)
 	
