@@ -1512,9 +1512,13 @@ def write_beams(cell, param):
 							if param['sweep_hole_size_phc_meander'] is True:
 								# Phcs on waveguides with sweep
 								rad_top = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
+								print("rad top" + str(rad_top))
 								rad2_top = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
+								print("rad2 top" + str(rad2_top))
 								rad_bottom = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
+								print("rad bottom" + str(rad_bottom))
 								rad2_bottom = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
+								print("rad2 bottom" + str(rad2_bottom))
 
 								if iB == 1:
 									pts = [(hole_center_x + param2['bus_taper_len'] / 2 + rad_top * numpy.cos(x)+3* param['aper_mir'], hole_center_y + rad2_top * numpy.sin(x) + S * (2 * (iM + 1) * param['bus_bend_radius'] + param['wg'] + param['ww'] / 2 + param['beam_width'] / 2 + (1 + iM) * param['y_spacing_between_wabguides'])) for x in philist]
@@ -2130,8 +2134,8 @@ endsweep = 1.03+xin
 
 #CaWO4 PhC hole scale
 
-num_rows = 6 #repetition in y
-num_cols = 5 #reptition in x
+num_rows = 2 #repetition in y
+num_cols = 2 #reptition in x
 
 device_y_um = 108
 device_y_nm = device_y_um * 1000
@@ -2484,7 +2488,7 @@ for iXM in range(1):
 					param2['num_mirror_holes'] = param2['mirror_len']
 					param2['aper_cav'] = 298 #298
 					param2['aper_mir'] = 343 #343
-					param2['beam_width'] =  630-12 +13 +5 #630+23
+					param2['beam_width'] =  600 # SRP: I think this defines the PhC wy
 					param2['hole_rad'] = (145.6-20) / 2.0 # (145.6-20) / 2.0  # SC changes -40 to -20 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
 					param2['hole_rad2'] = (307.8-10) / 2.0  #(307.8-10) / 2.0  # SC changes -30 to -10 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
 					param2['vflagbeam_q'] = False
@@ -2672,5 +2676,5 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('scale_factor_GC_hole_size_removed.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('brought_back_cavity_and_mirror_num.gds', unit=1.0e-9, precision=1.0e-10)
 	
