@@ -1483,8 +1483,8 @@ def write_beams(cell, param):
 				for iHx in range(param['num_mirror_holes'] + param2['cavity_len'] + param2['middle_mirror_len'] / 2):
 					hole_scale_list_phc[(param2['num_phc'] / 2 - 2) * (param2['cavity_len'] + 2) + iHx + param['num_mirror_holes'] + param2['cavity_len'] + param2['middle_mirror_len'] / 2 + y * holes_in_half_waveguide] = scale_list_phc[param2['num_phc'] / 2 - 2 + 1 + y * param2['num_phc'] / 2]
 
-			# print(scale_list_phc)
-			# print(hole_scale_list_phc)
+			#print(hole_scale_list_phc)
+			print(scale_list_phc)
 
 		hole_center_y_new = 0#cell_edge_y
 
@@ -1511,14 +1511,23 @@ def write_beams(cell, param):
 
 							if param['sweep_hole_size_phc_meander'] is True:
 								# Phcs on waveguides with sweep
-								rad_top = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
-								print("rad top" + str(rad_top))
-								rad2_top = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
-								print("rad2 top" + str(rad2_top))
-								rad_bottom = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
-								print("rad bottom" + str(rad_bottom))
-								rad2_bottom = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
-								print("rad2 bottom" + str(rad2_bottom))
+								# rad_top = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
+								# print("rad top" + str(rad_top))
+								# rad2_top = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
+								# print("rad2 top" + str(rad2_top))
+								# rad_bottom = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
+								# print("rad bottom" + str(rad_bottom))
+								# rad2_bottom = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
+								# print("rad2 bottom" + str(rad2_bottom))
+
+								rad_top = param['hole_rad']
+								hx_to_debug = 2.0*rad_top
+								print("updated hx" + str(hx_to_debug))
+								rad2_top = param['hole_rad2']
+								hy_to_debug = 2.0*rad2_top
+								print("updated rad 2 top" + str(hy_to_debug))
+								rad_bottom = rad_top
+								rad2_bottom = rad2_top
 
 								if iB == 1:
 									pts = [(hole_center_x + param2['bus_taper_len'] / 2 + rad_top * numpy.cos(x)+3* param['aper_mir'], hole_center_y + rad2_top * numpy.sin(x) + S * (2 * (iM + 1) * param['bus_bend_radius'] + param['wg'] + param['ww'] / 2 + param['beam_width'] / 2 + (1 + iM) * param['y_spacing_between_wabguides'])) for x in philist]
@@ -2163,6 +2172,9 @@ endsweep =(1 +xin)*0.99
 startsweep_CaWO4=startsweep
 endsweep_CaWO4=endsweep
 
+air_hole_hx = 236.82
+air_hole_hy = 407.03
+
 # print ("YSOstart" + str(startsweep))
 # print ("YSOend" + str(endsweep))
 print ("calciumstart" + str(startsweep_CaWO4))
@@ -2489,8 +2501,8 @@ for iXM in range(1):
 					param2['aper_cav'] = 298 #298
 					param2['aper_mir'] = 343 #343
 					param2['beam_width'] =  600 # SRP: I think this defines the PhC wy
-					param2['hole_rad'] = (145.6-20) / 2.0 # (145.6-20) / 2.0  # SC changes -40 to -20 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
-					param2['hole_rad2'] = (307.8-10) / 2.0  #(307.8-10) / 2.0  # SC changes -30 to -10 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
+					param2['hole_rad'] = air_hole_hx / 2.0 # (145.6-20) / 2.0  # SC changes -40 to -20 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
+					param2['hole_rad2'] = air_hole_hy / 2.0  #(307.8-10) / 2.0  # SC changes -30 to -10 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
 					param2['vflagbeam_q'] = False
 					param2['y_spacing_between_wabguides'] = 00
 
@@ -2676,5 +2688,5 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('brought_back_cavity_and_mirror_num.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('removed_all_hole_size_sweep.gds', unit=1.0e-9, precision=1.0e-10)
 	
