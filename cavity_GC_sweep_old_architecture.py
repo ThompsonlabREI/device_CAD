@@ -2486,8 +2486,8 @@ for iXM in range(1):
 					param2['cavity_len'] = cavity_list_CaWO4[iY]
 					param2['mirror_len'] = mirror_listCaWO4[iY]
 					param2['num_mirror_holes'] = param2['mirror_len']
-					param2['aper_cav'] = 298 #298
-					param2['aper_mir'] = 343 #343
+					param2['aper_cav'] = 349.1 #298
+					param2['aper_mir'] = 435.2 #343
 					param2['beam_width'] =  600 # SRP: I think this defines the PhC wy
 					param2['hole_rad'] = 236.8 / 2.0 # (145.6-20) / 2.0  # SC changes -40 to -20 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
 					param2['hole_rad2'] = 407.03 / 2.0  #(307.8-10) / 2.0  # SC changes -30 to -10 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
@@ -2676,5 +2676,5 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('updated_hole_size_for_suspended_new_branch.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('updated_aper_cav_and_aper_mir.gds', unit=1.0e-9, precision=1.0e-10)
 	
