@@ -232,6 +232,7 @@ def write_beams(cell, param):
 					(outerbox_x_max - (iTT + 1) * param['beam_len'] / (param['num_tether_device'] + 1) - param['beam_width'] / 2 + param['notch_end_depth'], outerbox_y_max - param['notch_end_offset'])]))
 
 	for iB in range(-1,param['num_beams'] + 1): # Use range(0,param['num_beams'] + 1) with vertical linker
+		print("iB index " + str(iB))
 		#SC, starting from -1 to add bottom horizontal linker
 		cell_edge_x = param['array_orig_x'] + param['beam_len']/2.0
 		hole_center_y = param['array_orig_y'] + iB*param['beam_spacing']
@@ -1466,7 +1467,11 @@ def write_beams(cell, param):
 		cell_edge_y = hole_center_y + param['extra_len_far']+ param['extra_len_far']
 
 		if param['meander'] is True:
-			scale_list_phc = numpy.linspace(param2['start_sweep_meander'], param2['end_sweep_meander'], param2['num_phc_total'])  # param2['num_phc']
+			if param2['start_sweep_meander']==param2['end_sweep_meander']:
+				scale_list_phc = numpy.ones(param2["num_phc_total"])
+			else:
+				scale_list_phc = numpy.linspace(param2['start_sweep_meander'], param2['end_sweep_meander'],param2['num_phc_total'])  # param2['num_phc']
+
 			hole_scale_list_phc = numpy.zeros(2 * param['waveguide_with_end_mirror'] * (param2['num_phc'] * param2['cavity_len'] + 4 * param['num_mirror_holes'] + (param2['num_phc'] - 2) * param2['middle_mirror_len']))  # param2['num_phc']
 
 			holes_in_waveguide = param2['num_phc'] * param2['cavity_len'] + 4 * param['num_mirror_holes'] + (param2['num_phc'] - 2) * param2['middle_mirror_len']
@@ -1496,12 +1501,12 @@ def write_beams(cell, param):
 			# print(scale_list_phc)
 
 		hole_center_y_new = 0#cell_edge_y
-
+		print("hole scale list phc" + str(hole_scale_list_phc))
 		if iB < param['num_beams'] and iB > -1:
 
 			if param['holes_q'] is True:
-				print("final aper list" + str(param['aper_list']))
-
+				# print("final aper list" + str(param['aper_list']))
+				# print("rad_list_mat" + str(param['rad_list_mat']))
 				for i in range(0, len(param['rad_list_mat'][:, 1])):
 
 					hole_center_x = cell_edge_x + param['aper_list'][i] / 2.0
@@ -1524,23 +1529,23 @@ def write_beams(cell, param):
 								# Phcs on waveguides with sweep
 								# print("holes in waveguide")
 								# print(holes_in_waveguide)
-								# rad_top = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
-								# print("rad top" + str(rad_top))
-								# rad2_top = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
-								# print("rad2 top" + str(rad2_top))
-								# rad_bottom = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
-								# print("rad bottom" + str(rad_bottom))
-								# rad2_bottom = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
-								# print("rad2 bottom" + str(rad2_bottom))
-
-								rad_top = param['hole_rad']
-								# hx_to_debug = 2.0*rad_top
-								# print("updated hx" + str(hx_to_debug))
-								rad2_top = param['hole_rad2']
-								# hy_to_debug = 2.0*rad2_top
-								# print("updated rad 2 top" + str(hy_to_debug))
-								rad_bottom = rad_top
-								rad2_bottom = rad2_top
+								rad_top = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
+								print("rad top" + str(rad_top))
+								rad2_top = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
+								print("rad2 top" + str(rad2_top))
+								rad_bottom = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
+								print("rad bottom" + str(rad_bottom))
+								rad2_bottom = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
+								print("rad2 bottom" + str(rad2_bottom))
+								print("scale factor for this specific air hole" + str(hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]))
+								# rad_top = param['hole_rad']
+								# # hx_to_debug = 2.0*rad_top
+								# # print("updated hx" + str(hx_to_debug))
+								# rad2_top = param['hole_rad2']
+								# # hy_to_debug = 2.0*rad2_top
+								# # print("updated rad 2 top" + str(hy_to_debug))
+								# rad_bottom = rad_top
+								# rad2_bottom = rad2_top
 
 								if iB == 1:
 									pts = [(hole_center_x + param2['bus_taper_len'] / 2 + rad_top * numpy.cos(x)+3* param['aper_mir'], hole_center_y + rad2_top * numpy.sin(x) + S * (2 * (iM + 1) * param['bus_bend_radius'] + param['wg'] + param['ww'] / 2 + param['beam_width'] / 2 + (1 + iM) * param['y_spacing_between_wabguides'])) for x in philist]
@@ -2004,7 +2009,7 @@ def make_cavity_params_tm_refl(param):
 			aper_c = (param['aper_mir'] - 4*param['aper_cav']*nmax*nmax)/(1-4*nmax*nmax)
 			
 			aper_list_cav = [aper_a*x*x + aper_c for x in aper_list_idx] #aper list for the cavity region is generated here
-			print("aper list cavity" + str(aper_list_cav))
+			# print("aper list cavity" + str(aper_list_cav))
 		elif param['taper_type'] == 'chan':
 			# function from Jasper Chan's PhD thesis which has smooth derivatives
 			# 2x**3 - 3x**2 + 1
@@ -2133,10 +2138,13 @@ def make_cavity_params_tm_refl(param):
 	param['rad_list_mat'] = numpy.zeros((len(param['aper_list']), param['num_beams']))
 	param['rad2_list_mat'] = numpy.zeros((len(param['aper_list']), param['num_beams']))
 
+	print("hole_scale_list" + str(hole_scale_list))
 	for iHH in range(0,param['num_beams']):
 
 		param['rad_list_mat'][:,iHH]=numpy.array(param['rad_list'])*hole_scale_list[iHH]
 		param['rad2_list_mat'][:,iHH]=numpy.array(param['rad_list2'])*hole_scale_list[iHH]
+
+	# print("rad_list_mat before write beams function" + str(param['rad_list_mat']))
 
 # don't know what the options are... presumably 1e-9 is the unit (in meters)
 beams = gdspy.Cell('beams')
@@ -2459,12 +2467,14 @@ for iXM in range(1):
 						param2['start_sweep_meander'] = startsweep[iX]
 						param2['end_sweep_meander'] = endsweep[iX]
 					if param2['hoste'] == 3:
-						param2['start_sweep_meander'] = startsweep_CaWO4[iX]
-						param2['end_sweep_meander'] = endsweep_CaWO4[iX]
+						# param2['start_sweep_meander'] = startsweep_CaWO4[iX]
+						# param2['end_sweep_meander'] = endsweep_CaWO4[iX]
+						param2['start_sweep_meander'] = 1.0
+						param2['end_sweep_meander'] = 1.0
 
 				# param2['mirror_len'] = 9
 				param2['support_tether_q'] = True
-				param2['cavity_len'] = 10
+				param2['cavity_len'] = 10 #redefined later for specific host
 
 				if param2['hoste'] == 1:  # 1==YSO
 					param2['wg'] = 485
@@ -2609,7 +2619,7 @@ for iXM in range(1):
 				param2['num_hole_cluster'] = 2
 				param2['num_beams'] = param2['num_hole_size'] * param2['num_hole_cluster']
 
-				param2['num_phc'] = 3  # number of PhCs per waveguide slub
+				param2['num_phc'] = 4  # number of PhCs per waveguide slub
 				param2['bus_taper_len'] = 2000
 				param2['bus_bend_radius'] = 6000
 				param2['Len_bus_waveguide'] = (2*param2['mirror_len']+ (param2['num_phc'])*cavity_list_CaWO4[1]+(param2['num_phc']-1)*param2['middle_mirror_len']+2)*param2['aper_mir']
@@ -2697,7 +2707,7 @@ for iXM in range(1):
 				param2['array_orig_y'] = chipCenterY + iX*device_y_nm + y_offset
 				# if iX==0:
 				# 	param2['array_orig_y'] = chipCenterY + 350e3 * iY -50e3*iY
-				print("writing sweep combo x" + str(param2['array_orig_x']) + "y" + str(param2['array_orig_y']))
+				# print("writing sweep combo x" + str(param2['array_orig_x']) + "y" + str(param2['array_orig_y']))
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
