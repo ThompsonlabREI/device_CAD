@@ -1466,6 +1466,8 @@ def write_beams(cell, param):
 		cell_edge_y = hole_center_y + param['extra_len_far']+ param['extra_len_far']
 
 		if param['meander'] is True:
+			print("num beams" + str(param['num_beams']))
+			print("num phc total" + str(param2['num_phc_total']))
 			scale_list_phc = numpy.linspace(param2['start_sweep_meander'], param2['end_sweep_meander'], param2['num_phc_total'])  # param2['num_phc']
 			hole_scale_list_phc = numpy.zeros(2 * param['waveguide_with_end_mirror'] * (param2['num_phc'] * param2['cavity_len'] + 4 * param['num_mirror_holes'] + (param2['num_phc'] - 2) * param2['middle_mirror_len']))  # param2['num_phc']
 
@@ -1483,8 +1485,9 @@ def write_beams(cell, param):
 				for iHx in range(param['num_mirror_holes'] + param2['cavity_len'] + param2['middle_mirror_len'] / 2):
 					hole_scale_list_phc[(param2['num_phc'] / 2 - 2) * (param2['cavity_len'] + 2) + iHx + param['num_mirror_holes'] + param2['cavity_len'] + param2['middle_mirror_len'] / 2 + y * holes_in_half_waveguide] = scale_list_phc[param2['num_phc'] / 2 - 2 + 1 + y * param2['num_phc'] / 2]
 
-			# print(scale_list_phc)
-			# print(hole_scale_list_phc)
+			print("scale list phc from meander variation" + str(scale_list_phc))
+			# print("scale list for each hole" + str(hole_scale_list_phc))
+			#hole_scale_list_phc is assigned from scale_list_phc
 
 		hole_center_y_new = 0#cell_edge_y
 
@@ -1512,13 +1515,17 @@ def write_beams(cell, param):
 							if param['sweep_hole_size_phc_meander'] is True:
 								# Phcs on waveguides with sweep
 								rad_top = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
-								print("rad top" + str(rad_top))
+								# print("rad top" + str(rad_top))
 								rad2_top = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + (2 * iM + 1) * holes_in_waveguide]  # for phc above meander waveguide
-								print("rad2 top" + str(rad2_top))
+								# print("rad2 top" + str(rad2_top))
 								rad_bottom = param['rad_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
-								print("rad bottom" + str(rad_bottom))
+								# print("rad bottom" + str(rad_bottom))
 								rad2_bottom = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
-								print("rad2 bottom" + str(rad2_bottom))
+								# print("rad2 bottom" + str(rad2_bottom))
+
+								if i==0:
+									print("hx for smallest ellipse air hole on this x,y combo" + str(2.0*rad_bottom))
+									print("hy for smallest ellipse air hole on this x,y combo" + str(2.0 * rad2_bottom))
 
 								if iB == 1:
 									pts = [(hole_center_x + param2['bus_taper_len'] / 2 + rad_top * numpy.cos(x)+3* param['aper_mir'], hole_center_y + rad2_top * numpy.sin(x) + S * (2 * (iM + 1) * param['bus_bend_radius'] + param['wg'] + param['ww'] / 2 + param['beam_width'] / 2 + (1 + iM) * param['y_spacing_between_wabguides'])) for x in philist]
@@ -2115,6 +2122,8 @@ def make_cavity_params_tm_refl(param):
 
 		param['rad_list_mat'][:,iHH]=numpy.array(param['rad_list'])*hole_scale_list[iHH]
 		param['rad2_list_mat'][:,iHH]=numpy.array(param['rad_list2'])*hole_scale_list[iHH]
+	print("hole scale list used in make params, but defined elsewhere" + str(hole_scale_list))
+	print("rad list mat param for this x,y device" + str(param['rad_list_mat']))
 
 # don't know what the options are... presumably 1e-9 is the unit (in meters)
 beams = gdspy.Cell('beams')
@@ -2134,8 +2143,8 @@ endsweep = 1.03+xin
 
 #CaWO4 PhC hole scale
 
-num_rows = 2 #repetition in y
-num_cols = 2 #reptition in x
+num_rows = 3 #repetition in y
+num_cols = 3 #reptition in x
 
 device_y_um = 108
 device_y_nm = device_y_um * 1000
@@ -2663,6 +2672,7 @@ for iXM in range(1):
 						hole_scale_list = hole_scale_list_meander
 						param2['hole_group'] = 2
 
+
 				make_cavity_params_tm_refl(param2)
 
 				param2['array_orig_x'] = chipCenterX + device_x_and_spacing_x_nm * iX
@@ -2676,5 +2686,4 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('mirror_num_cavity_num_in_code_match_sim.gds', unit=1.0e-9, precision=1.0e-10)
-	
+gdspy.gds_print('checking_PhC_airhole_size.gds', unit=1.0e-9, precision=1.0e-10)
