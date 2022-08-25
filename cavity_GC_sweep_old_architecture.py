@@ -40,7 +40,7 @@ def write_beams(cell, param):
 	else:
 
 		outerbox_x_max = param['array_orig_x'] + param['beam_len'] + numpy.cos(param['bend_angle'])*(param['stick_len']) + numpy.sin(param['bend_angle'])*param['bend_rad'] + 500
-		outerbox_x_min = param['array_orig_x']# - param['beam_len']/2.0	
+		outerbox_x_min = param['array_orig_x']# - param['beam_len']/2.0
 
 	# asymmetric shape if using vertical flag beams (vflagbeam) for alignment along the edge of the YSO
 	if param['vflagbeam_q'] is True:
@@ -277,7 +277,7 @@ def write_beams(cell, param):
 			grating_start_x = grating_pad_center_x - param['grating_pad_length']/2.0 + param['grating_pad_buffer']
 			grating_start_y = grating_pad_center_y - param['grating_pad_width']/2.0 + param['grating_pad_buffer']
 
-			
+
 			# add rectangular pad for grating coupler
 			grating_pad_pts = gdspy.Polygon(1,[
 				(grating_pad_center_x - param['grating_pad_length']/2.0, grating_pad_center_y - param['grating_pad_width']/2.0),
@@ -331,7 +331,7 @@ def write_beams(cell, param):
 					cell.add(gdspy.Round(3, [grating_column_start_x + param['a_2DPhC'], grating_column_start_y], air_hole_diameter_list[iGx] / 2.0, number_of_points = param['n_circle_points_GC']))
 					if iGy < (param['num_grating_periods_y'] -1):
 						cell.add(gdspy.Round(3, [grating_column_start_x + param['a_2DPhC'] / 2.0, grating_column_start_y + param['a_2DPhC'] / 2.0 *numpy.sqrt(3)], air_hole_diameter_list[iGx] / 2.0, number_of_points = param['n_circle_points_GC']))
-		
+
 		if iB < param['num_beams']:
 
 			# original beam narrowing taper (NO GRATINGS)
@@ -1661,7 +1661,7 @@ def write_beams(cell, param):
 								(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 2.0),
 								(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0)
 							]))
-							
+
 							cell.add(gdspy.Polygon(3, [
 								(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0),
 								(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['notch_end_depth'] - param['beam_width'] / 2.0),
@@ -1766,11 +1766,11 @@ def write_beams(cell, param):
 							(beam_center_x + param['beam_len']/2.0 - param['vert_linker_offset'], hole_center_y + param['beam_spacing'] - param['beam_width']/2.0)]))
 
 def write_arrow(cell,center_x,center_y,angle,scale=1):
-	
+
 	shaft_width = scale*20000
 	shaft_len = scale*60000
 	head_size = scale*40000
-	
+
 	pts = [ (-shaft_width/2.0, -shaft_len/2.0),
 			(-shaft_width/2.0, shaft_len/2.0),
 			(-head_size/2.0, shaft_len/2.0),
@@ -1779,9 +1779,9 @@ def write_arrow(cell,center_x,center_y,angle,scale=1):
 			(shaft_width/2.0, shaft_len/2.0),
 			(shaft_width/2.0, -shaft_len/2.0),
 			(-shaft_width/2.0, -shaft_len/2.0) ]
-			
+
 	pts_rot = [ (center_x + x[0]*math.cos(angle*3.142/180) + x[1]*math.sin(angle*3.142/180), center_y - x[0]*math.sin(angle*3.142/180) + x[1]*math.cos(angle*3.142/180)) for x in pts]
-	
+
 	cell.add(gdspy.Polygon(2,pts_rot))
 
 def write_alignment(cell,center_x,center_y,scale=1,angle=0,bounding=None,layer=2,aspect=1):
@@ -1791,7 +1791,7 @@ def write_alignment(cell,center_x,center_y,scale=1,angle=0,bounding=None,layer=2
 	bounding_width = 3e5
 
 	marker_eps = 10
-	
+
 	pts = [ (0, 0),
 			(0 + shaft_len, 0),
 			(0 + shaft_len, 0 + shaft_width),
@@ -1800,10 +1800,10 @@ def write_alignment(cell,center_x,center_y,scale=1,angle=0,bounding=None,layer=2
 			(0, 0 + shaft_len),
 			(0, 0) ]
 
-	
+
 	pts_rot = [ (center_x + marker_eps + x[0]*math.cos(angle*3.142/180) + x[1]*math.sin(angle*3.142/180), center_y + marker_eps - x[0]*math.sin(angle*3.142/180) + x[1]*math.cos(angle*3.142/180)) for x in pts]
 	cell.add(gdspy.Polygon(layer,pts_rot))
-	
+
 	pts1 = [ (0, 0),
 			(0 - shaft_len, 0),
 			(0 - shaft_len, 0 - shaft_width),
@@ -1811,7 +1811,7 @@ def write_alignment(cell,center_x,center_y,scale=1,angle=0,bounding=None,layer=2
 			(0 - shaft_width, 0 - shaft_len),
 			(0, 0 - shaft_len),
 			(0, 0) ]
-		
+
 	pts1_rot = [ (center_x - marker_eps + x[0]*math.cos(angle*3.142/180) + x[1]*math.sin(angle*3.142/180), center_y - marker_eps - x[0]*math.sin(angle*3.142/180) + x[1]*math.cos(angle*3.142/180)) for x in pts1]
 	cell.add(gdspy.Polygon(layer,pts1_rot))
 
@@ -1831,7 +1831,7 @@ def write_alignment_small(cell,center_x,center_y,scale=1,angle=0,bounding=None,l
 	bounding_width = 3e5
 
 	marker_eps = 10
-	
+
 	pts = [ (0, 0),
 			(0 + shaft_width, 0),
 			(0 + shaft_width, 0 + shaft_len),
@@ -1840,13 +1840,13 @@ def write_alignment_small(cell,center_x,center_y,scale=1,angle=0,bounding=None,l
 
 	pts_rot = [ (center_x + marker_eps + x[0]*math.cos(angle*3.142/180) + x[1]*math.sin(angle*3.142/180), center_y + marker_eps - x[0]*math.sin(angle*3.142/180) + x[1]*math.cos(angle*3.142/180)) for x in pts]
 	cell.add(gdspy.Polygon(layer,pts_rot))
-	
+
 	pts1 = [ (0, 0),
 			(0 - shaft_width, 0),
 			(0 - shaft_width, 0 - shaft_len),
 			(0, 0 - shaft_len),
 			(0, 0) ]
-		
+
 	pts1_rot = [ (center_x - marker_eps + x[0]*math.cos(angle*3.142/180) + x[1]*math.sin(angle*3.142/180), center_y - marker_eps - x[0]*math.sin(angle*3.142/180) + x[1]*math.cos(angle*3.142/180)) for x in pts1]
 	cell.add(gdspy.Polygon(layer,pts1_rot))
 
@@ -1866,7 +1866,7 @@ def write_heater_line(cell, center_x, center_y, height, width,layer=9):
 			(center_x + width, center_y),
 			(center_x, center_y)
 			 ]
-			
+
 	cell.add(gdspy.Polygon(layer,pts)) #Previously used for single vertical lines at the bottom of the pattern
 
 def write_line(cell,center_x,center_y,height,width,vbeamwidth,layer=1):
@@ -1878,9 +1878,9 @@ def write_line(cell,center_x,center_y,height,width,vbeamwidth,layer=1):
 	# 		(center_x+width/2.0,center_y+len/2.0),
 	# 		(center_x-width/2.0,center_y+len/2.0),
 	# 		(center_x-width/2.0,center_y-len/2.0) ]
-			
+
 	# cell.add(gdspy.Polygon(layer,pts)) Previously used for single vertical lines at the bottom of the pattern
-	
+
 	pts_outer = gdspy.Polygon(2,[ (center_x-width/2.0,center_y-height/2.0),
 			(center_x+width/2.0,center_y-height/2.0),
 			(center_x+width/2.0,center_y+height/2.0),
@@ -1908,14 +1908,14 @@ def write_line(cell,center_x,center_y,height,width,vbeamwidth,layer=1):
 			(center_x+width2/2.0,center_y+height/4.0),
 			(center_x-width2/2.0,center_y+height/4.0),
 			(center_x-width2/2.0,center_y-height/16.0)]
-			
+
 	cell.add(pts_outer)
 	cell.add(gdspy.Polygon(1,pts_inner))
 	cell.add(gdspy.Polygon(1,left_arrow))
 	cell.add(gdspy.Polygon(1,right_arrow))
 	cell.add(gdspy.Polygon(3,hole_arrow))
 
-	
+
 	vnotch_leftdown=[ (center_x-width2,center_y-height2),
 			(center_x-width2+vnotch_depth,center_y-height2+vnotch_height),
 			(center_x-width2,center_y-height2+2.0*vnotch_height),(center_x-width2,center_y-height2) ]
@@ -1941,7 +1941,7 @@ def write_line(cell,center_x,center_y,height,width,vbeamwidth,layer=1):
 # 			(center_x+trench_width/2.0,center_y+trench_length/2.0),
 # 			(center_x-trench_width/2.0,center_y+trench_length/2.0),
 # 			(center_x-trench_width/2.0,center_y-trench_length/2.0) ])
-	
+
 # 	pts_trench.fillet(2000) # AD Use fillet command to round corners by 2 um radius, can remove later when switching to photoresist
 
 # 	cell.add(pts_trench)
@@ -1980,7 +1980,7 @@ def make_cavity_params_tm_refl(param):
 
 			aper_a = (param['aper_mir'] - param['aper_cav'])/(nmax*nmax - 0.25)
 			aper_c = (param['aper_mir'] - 4*param['aper_cav']*nmax*nmax)/(1-4*nmax*nmax)
-			
+
 			aper_list_cav = [aper_a*x*x + aper_c for x in aper_list_idx]
 
 		elif param['taper_type'] == 'chan':
@@ -2019,7 +2019,7 @@ def make_cavity_params_tm_refl(param):
 
 		if param['taper_q'] is False:
 			aper_list_cav = [param['aper_mir'] for x in aper_list_idx]
-		
+
 		if param['sym_hole_taper_q'] is True:
 			# print "Inside sym taper q"
 			param['aper_list'].extend(aper_list_mir)
@@ -2035,7 +2035,7 @@ def make_cavity_params_tm_refl(param):
 
 			param['aper_list'].extend(aper_list_mir)
 
-		else: 
+		else:
 			param['aper_list'] = copy(aper_list_cav)
 			param['aper_list'].extend(aper_list_mir)
 
@@ -2489,8 +2489,8 @@ for iXM in range(1):
 					param2['aper_cav'] = 298 #298
 					param2['aper_mir'] = 343 #343
 					param2['beam_width'] =  600 # SRP: I think this defines the PhC wy
-					param2['hole_rad'] = (145.6-20) / 2.0 # (145.6-20) / 2.0  # SC changes -40 to -20 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
-					param2['hole_rad2'] = (307.8-10) / 2.0  #(307.8-10) / 2.0  # SC changes -30 to -10 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
+					param2['hole_rad'] = 236.8 / 2.0 # (145.6-20) / 2.0  # SC changes -40 to -20 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
+					param2['hole_rad2'] = 407.03 / 2.0  #(307.8-10) / 2.0  # SC changes -30 to -10 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
 					param2['vflagbeam_q'] = False
 					param2['y_spacing_between_wabguides'] = 00
 
@@ -2555,12 +2555,12 @@ for iXM in range(1):
 				# param2['num_tether_device'] = 30
 
 				param2['square_holes_q'] = False
-				
+
 				param2['tm_ff'] = 0.2*scale_list[0]**2
 				param2['tm_len'] = 0
 				param2['tm_a_taper_len'] = 0
 				param2['tm_w_taper_len'] = 0
-				
+
 				param2['notch_q'] = True
 				param2['extra_left_notches'] = True
 				# param2['notch_end_depth'] = 285 + 25# The +25 is only added for 650 nm beam width
@@ -2676,5 +2676,5 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('brought_back_cavity_and_mirror_num.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('updated_hole_size_for_suspended_new_branch.gds', unit=1.0e-9, precision=1.0e-10)
 	
