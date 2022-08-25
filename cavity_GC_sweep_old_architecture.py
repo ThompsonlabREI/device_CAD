@@ -171,16 +171,16 @@ def write_beams(cell, param):
 					(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_min + param['box_buffer'] + param['beam_width'] / 2),
 					(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_min + param['beam_width'] / 2 - param['beam_width'] / 2)
 				]))
-				cell.add(gdspy.Polygon(3, [  # bottom block pinch points
-					(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2, outerbox_y_min + param['notch_end_offset'] - param['notch_end_width'] / 2 + param['beam_width'] / 2),
-					(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2, outerbox_y_min + param['notch_end_offset'] + param['notch_end_width'] / 2 + param['beam_width'] / 2),
-					(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2 - param['notch_end_depth'], outerbox_y_min + param['notch_end_offset'] + param['beam_width'] / 2)]))
-
-				cell.add(gdspy.Polygon(3, [  # bottom block pinch points
-					(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_min + param['notch_end_offset'] - param['notch_end_width'] / 2 + param['beam_width'] / 2),
-					(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_min + param['notch_end_offset'] + param['notch_end_width'] / 2 + param['beam_width'] / 2),
-					(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2 + param['notch_end_depth'], outerbox_y_min + param['notch_end_offset'] + param['beam_width'] / 2)]))
-
+			# 	cell.add(gdspy.Polygon(3, [  # bottom block pinch points
+			# 		(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2, outerbox_y_min + param['notch_end_offset'] - param['notch_end_width'] / 2 + param['beam_width'] / 2),
+			# 		(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2, outerbox_y_min + param['notch_end_offset'] + param['notch_end_width'] / 2 + param['beam_width'] / 2),
+			# 		(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2 - param['notch_end_depth'], outerbox_y_min + param['notch_end_offset'] + param['beam_width'] / 2)]))
+			#
+			# 	cell.add(gdspy.Polygon(3, [  # bottom block pinch points
+			# 		(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_min + param['notch_end_offset'] - param['notch_end_width'] / 2 + param['beam_width'] / 2),
+			# 		(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_min + param['notch_end_offset'] + param['notch_end_width'] / 2 + param['beam_width'] / 2),
+			# 		(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2 + param['notch_end_depth'], outerbox_y_min + param['notch_end_offset'] + param['beam_width'] / 2)]))
+			#
 				cell.add(gdspy.Polygon(1, [  # top block linkers
 					(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_max - param['beam_width'] / 2 + param['beam_width'] / 2),
 					(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2, outerbox_y_max - param['beam_width'] / 2 + param['beam_width'] / 2),
@@ -188,14 +188,14 @@ def write_beams(cell, param):
 					(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_max - param['box_buffer'] - param['beam_width'] / 2),
 					(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_max - param['beam_width'] / 2 + param['beam_width'] / 2)
 				]))
-				cell.add(gdspy.Polygon(3, [  # top block pinch points
-					(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2, outerbox_y_max - param['notch_end_offset'] - param['notch_end_width'] / 2 - param['beam_width'] / 2),
-					(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2, outerbox_y_max - param['notch_end_offset'] + param['notch_end_width'] / 2 - param['beam_width'] / 2),
-					(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2 - param['notch_end_depth'], outerbox_y_max - param['notch_end_offset'] - param['beam_width'] / 2)]))
-				cell.add(gdspy.Polygon(3, [  # top block pinch points
-					(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_max - param['notch_end_offset'] - param['notch_end_width'] / 2 - param['beam_width'] / 2),
-					(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_max - param['notch_end_offset'] + param['notch_end_width'] / 2 - param['beam_width'] / 2),
-					(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2 + param['notch_end_depth'], outerbox_y_max - param['notch_end_offset'] - param['beam_width'] / 2)]))
+			# 	cell.add(gdspy.Polygon(3, [  # top block pinch points
+			# 		(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2, outerbox_y_max - param['notch_end_offset'] - param['notch_end_width'] / 2 - param['beam_width'] / 2),
+			# 		(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2, outerbox_y_max - param['notch_end_offset'] + param['notch_end_width'] / 2 - param['beam_width'] / 2),
+			# 		(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) + param['beam_width'] / 2 - param['notch_end_depth'], outerbox_y_max - param['notch_end_offset'] - param['beam_width'] / 2)]))
+			# 	cell.add(gdspy.Polygon(3, [  # top block pinch points
+			# 		(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_max - param['notch_end_offset'] - param['notch_end_width'] / 2 - param['beam_width'] / 2),
+			# 		(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_max - param['notch_end_offset'] + param['notch_end_width'] / 2 - param['beam_width'] / 2),
+			# 		(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2 + param['notch_end_depth'], outerbox_y_max - param['notch_end_offset'] - param['beam_width'] / 2)]))
 
 		else:
 			for iTT in range(param['num_tether_device']):  # SC adding vertical block pinch points
@@ -1646,38 +1646,38 @@ def write_beams(cell, param):
 						for i in range(a): #3+param['waveguide_with_end_mirror']*3
 							# left
 							cell.add(gdspy.Polygon(1, [
-								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 2.0),
-								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0),
-								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2 - param['vert_linker_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0),
-								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2 - param['vert_linker_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 2.0)
+								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 1.0),
+								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 1.0),
+								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2 - param['vert_linker_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 1.0),
+								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2 - param['vert_linker_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 1.0)
 							]))
-							cell.add(gdspy.Polygon(3, [
-								(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 2.0),
-								(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['notch_end_depth'] - param['beam_width'] / 2.0),
-								(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] + param['notch_end_width'] / 2.0, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 2.0 )]))
-
-							cell.add(gdspy.Polygon(3, [
-								(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0 ),
-								(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2- param['notch_end_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['notch_end_depth'] + param['beam_width'] / 2.0),
-								(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] + param['notch_end_width'] / 2.0,outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0)]))
+						# 	cell.add(gdspy.Polygon(3, [
+						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 2.0),
+						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['notch_end_depth'] - param['beam_width'] / 2.0),
+						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] + param['notch_end_width'] / 2.0, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 2.0 )]))
+						#
+						# 	cell.add(gdspy.Polygon(3, [
+						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0 ),
+						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2- param['notch_end_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['notch_end_depth'] + param['beam_width'] / 2.0),
+						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] + param['notch_end_width'] / 2.0,outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0)]))
 						#right
 						for i in chain(range(a/2+1), range(a/2+7, a)):
 							cell.add(gdspy.Polygon(1, [
-								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0),
-								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min  + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 2.0),
-								(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 2.0),
-								(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0)
+								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 1.0),
+								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min  + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 1.0),
+								(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 1.0),
+								(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 1.0)
 							]))
 
-							cell.add(gdspy.Polygon(3, [
-								(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0),
-								(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['notch_end_depth'] - param['beam_width'] / 2.0),
-								(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'] + param['notch_end_width'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0)]))
-
-							cell.add(gdspy.Polygon(3, [
-								(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 2.0),
-								(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['notch_end_depth'] + param['beam_width'] / 2.0),
-								(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'] + param['notch_end_width'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 2.0)]))
+							# cell.add(gdspy.Polygon(3, [
+							# 	(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0),
+							# 	(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['notch_end_depth'] - param['beam_width'] / 2.0),
+							# 	(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'] + param['notch_end_width'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0)]))
+							#
+							# cell.add(gdspy.Polygon(3, [
+							# 	(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 2.0),
+							# 	(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['notch_end_depth'] + param['beam_width'] / 2.0),
+							# 	(beam_center_x + param['beam_len'] / 2.0 - param['notch_end_offset'] + param['notch_end_width'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 2.0)]))
 
 							#extra in right:
 							# param['array_orig_y'] + iB * param['beam_spacing']
@@ -2143,8 +2143,8 @@ endsweep = 1.03+xin
 
 #CaWO4 PhC hole scale
 
-num_rows = 3 #repetition in y
-num_cols = 3 #reptition in x
+num_rows = 2 #repetition in y
+num_cols = 2 #reptition in x
 
 device_y_um = 108
 device_y_nm = device_y_um * 1000
@@ -2631,7 +2631,7 @@ for iXM in range(1):
 				param2['width_silicon_between_HF_cuts']=8000
 				param2['width_HF_cuts']=1000
 				param2['num_mirror_holes_end_meander']=18 # has to be a multiple of 6
-				param2['separation_notches_meander_sides']=4500
+				param2['separation_notches_meander_sides']=4500 #separation between notches on siz
 				param2['width_wider_bus_wavguide_tether'] = 200
 
 				if param2['meander'] is True:
@@ -2686,4 +2686,4 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('checking_PhC_airhole_size.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('remove pinch points fatter.gds', unit=1.0e-9, precision=1.0e-10)
