@@ -2170,11 +2170,11 @@ print ("calciumend" + str(endsweep_CaWO4))
 
 target_GC_center_lambda_nm = 1544
 
-mirror_num = 10
+mirror_num = 7
 mirror_list = mirror_num*numpy.ones(num_rows, dtype=int) #number of mirrors is held constant for all the PhCs
 
 #assume cavity list is the same for now
-cavity_num = 14
+cavity_num = 12
 cavity_list = cavity_num*numpy.ones(num_rows, dtype=int)
 
 grating_taper_length_nm = 185000
@@ -2676,5 +2676,5 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('updated_aper_cav_and_aper_mir.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('mirror_num_cavity_num_in_code_match_sim.gds', unit=1.0e-9, precision=1.0e-10)
 	
