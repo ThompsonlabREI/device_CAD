@@ -105,6 +105,7 @@ def write_beams(cell, param):
 
 	if param['support_tether_q'] is True: # SC adding horizantal supporting tether
 		if param['meander'] is True:
+			print("support_tether_q value" + str(param['support_tether_q']))
 			beam_center_x = param['array_orig_x'] - param['beam_len'] / 2.0
 			circle_center_x = beam_center_x - param['beam_len'] / 2.0 + 2 * param2['vert_linker_width_left'] + param2['vert_linker_offset'] + 1.5 * param['beam_width']
 			cell.add(gdspy.Polygon(1, [  # bottom block holder
@@ -1346,47 +1347,52 @@ def write_beams(cell, param):
 						(beam_center_x - param['beam_len'] / 2.0 + param['notch_end_offset'] + param['notch_end_width'] / 2.0, hole_center_y + param['beam_width'] / 2.0 + param['beam_spacing'] * 2.0 / 3.0)]))
 
 			if param['straight_q'] is True and param['grating_pad_q'] is False and iB > -1:
+				if param['final_final_extra_notches_GC_pad'] is True:
 				# right side, has been modified to allow different notch parameters for left and right sides
-				cell.add(gdspy.Polygon(3, [
+					cell.add(gdspy.Polygon(3, [
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'] - param['notch_taper_end_width']/2.0, hole_center_y - param['end_width']/2.0),
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'], hole_center_y - param['end_width']/2.0 + param['notch_taper_end_depth']),
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'] + param['notch_taper_end_width']/2.0, hole_center_y - param['end_width']/2.0)] ) )
 
-				cell.add(gdspy.Polygon(3, [
+					cell.add(gdspy.Polygon(3, [
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'] - param['notch_taper_end_width']/2.0, hole_center_y + param['end_width']/2.0),
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'], hole_center_y + param['end_width']/2.0 - param['notch_taper_end_depth']),
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'] + param['notch_taper_end_width']/2.0, hole_center_y + param['end_width']/2.0)] ) )
 
 			if param['straight_q'] is True and param['grating_pad_q'] is True and iB > -1:
 				# right side, has been modified to allow different notch parameters for left and right sides
-				cell.add(gdspy.Polygon(3, [
+				if param['final_final_extra_notches_GC_pad'] is True:
+
+					cell.add(gdspy.Polygon(3, [
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'] - param['notch_taper_end_width']/2.0, hole_center_y - param['beam_width']/2.0),
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'], hole_center_y - param['beam_width']/2.0 + param['notch_taper_end_depth']),
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'] + param['notch_taper_end_width']/2.0, hole_center_y - param['beam_width']/2.0)] ) )
 
-				cell.add(gdspy.Polygon(3, [
+					cell.add(gdspy.Polygon(3, [
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'] - param['notch_taper_end_width']/2.0, hole_center_y + param['beam_width']/2.0),
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'], hole_center_y + param['beam_width']/2.0 - param['notch_taper_end_depth']),
 						(beam_center_x + param['beam_len']/2.0 - param['notch_end_offset'] + param['notch_taper_end_width']/2.0, hole_center_y + param['beam_width']/2.0)] ) )
 
 				# notches in extra top linker beams for grating pad
-				cell.add(gdspy.Polygon(3, [
+				if param['extra_notches_for_grating_pad'] is True:
+					print("extra notches for grating pad param value" + str(param['extra_notches_for_grating_pad']))
+					cell.add(gdspy.Polygon(3, [
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0 - param['notch_taper_end_width']/2.0, hole_center_y + param['grating_pad_width']/2.0),
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0 + param['notch_taper_end_width']/2.0, hole_center_y + param['grating_pad_width']/2.0),
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0, hole_center_y + param['grating_pad_width']/2.0 - param['notch_taper_end_depth'])] ) )
 
-				cell.add(gdspy.Polygon(3, [
+					cell.add(gdspy.Polygon(3, [
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0 - param['notch_taper_end_width']/2.0, hole_center_y + param['grating_pad_width']/2.0 - param['beam_width']),
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0 + param['notch_taper_end_width']/2.0, hole_center_y + param['grating_pad_width']/2.0 - param['beam_width']),
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0, hole_center_y + param['grating_pad_width']/2.0 - param['beam_width'] + param['notch_taper_end_depth'])] ) )
 
 				# notches in extra bottom linker beams for grating pad
-				cell.add(gdspy.Polygon(3, [
+					cell.add(gdspy.Polygon(3, [
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0 - param['notch_taper_end_width']/2.0, hole_center_y - param['grating_pad_width']/2.0 + param['beam_width']),
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0 + param['notch_taper_end_width']/2.0, hole_center_y - param['grating_pad_width']/2.0 + param['beam_width']),
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0, hole_center_y - param['grating_pad_width']/2.0 + param['beam_width'] - param['notch_taper_end_depth'])] ) )
 
-				cell.add(gdspy.Polygon(3, [
+					cell.add(gdspy.Polygon(3, [
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0 - param['notch_taper_end_width']/2.0, hole_center_y - param['grating_pad_width']/2.0),
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0 + param['notch_taper_end_width']/2.0, hole_center_y - param['grating_pad_width']/2.0),
 						(beam_center_x + param['beam_len']/2.0 - param['grating_pad_offset']/2.0, hole_center_y - param['grating_pad_width']/2.0 + param['notch_taper_end_depth'])] ) )
@@ -1466,8 +1472,8 @@ def write_beams(cell, param):
 		cell_edge_y = hole_center_y + param['extra_len_far']+ param['extra_len_far']
 
 		if param['meander'] is True:
-			print("num beams" + str(param['num_beams']))
-			print("num phc total" + str(param2['num_phc_total']))
+			# print("num beams" + str(param['num_beams']))
+			# print("num phc total" + str(param2['num_phc_total']))
 			scale_list_phc = numpy.linspace(param2['start_sweep_meander'], param2['end_sweep_meander'], param2['num_phc_total'])  # param2['num_phc']
 			hole_scale_list_phc = numpy.zeros(2 * param['waveguide_with_end_mirror'] * (param2['num_phc'] * param2['cavity_len'] + 4 * param['num_mirror_holes'] + (param2['num_phc'] - 2) * param2['middle_mirror_len']))  # param2['num_phc']
 
@@ -1485,7 +1491,7 @@ def write_beams(cell, param):
 				for iHx in range(param['num_mirror_holes'] + param2['cavity_len'] + param2['middle_mirror_len'] / 2):
 					hole_scale_list_phc[(param2['num_phc'] / 2 - 2) * (param2['cavity_len'] + 2) + iHx + param['num_mirror_holes'] + param2['cavity_len'] + param2['middle_mirror_len'] / 2 + y * holes_in_half_waveguide] = scale_list_phc[param2['num_phc'] / 2 - 2 + 1 + y * param2['num_phc'] / 2]
 
-			print("scale list phc from meander variation" + str(scale_list_phc))
+			# print("scale list phc from meander variation" + str(scale_list_phc))
 			# print("scale list for each hole" + str(hole_scale_list_phc))
 			#hole_scale_list_phc is assigned from scale_list_phc
 
@@ -1523,9 +1529,9 @@ def write_beams(cell, param):
 								rad2_bottom = param['rad2_list_mat'][i, iB] * hole_scale_list_phc[i + 2 * iM * holes_in_waveguide]  # for phc bollow meander waveguide
 								# print("rad2 bottom" + str(rad2_bottom))
 
-								if i==0:
-									print("hx for smallest ellipse air hole on this x,y combo" + str(2.0*rad_bottom))
-									print("hy for smallest ellipse air hole on this x,y combo" + str(2.0 * rad2_bottom))
+								# if i==0:
+									# print("hx for smallest ellipse air hole on this x,y combo" + str(2.0*rad_bottom))
+									# print("hy for smallest ellipse air hole on this x,y combo" + str(2.0 * rad2_bottom))
 
 								if iB == 1:
 									pts = [(hole_center_x + param2['bus_taper_len'] / 2 + rad_top * numpy.cos(x)+3* param['aper_mir'], hole_center_y + rad2_top * numpy.sin(x) + S * (2 * (iM + 1) * param['bus_bend_radius'] + param['wg'] + param['ww'] / 2 + param['beam_width'] / 2 + (1 + iM) * param['y_spacing_between_wabguides'])) for x in philist]
@@ -1638,6 +1644,7 @@ def write_beams(cell, param):
 						(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] / 2)]))
 
 				if param['extra_left_notches'] is True:
+					print("extra_left_notches param value" + str(param['extra_left_notches']))
 
 					#  Add linkers and notches pinches in left and right frame:
 					if param['meander'] is True:
@@ -2122,8 +2129,8 @@ def make_cavity_params_tm_refl(param):
 
 		param['rad_list_mat'][:,iHH]=numpy.array(param['rad_list'])*hole_scale_list[iHH]
 		param['rad2_list_mat'][:,iHH]=numpy.array(param['rad_list2'])*hole_scale_list[iHH]
-	print("hole scale list used in make params, but defined elsewhere" + str(hole_scale_list))
-	print("rad list mat param for this x,y device" + str(param['rad_list_mat']))
+	# print("hole scale list used in make params, but defined elsewhere" + str(hole_scale_list))
+	# print("rad list mat param for this x,y device" + str(param['rad_list_mat']))
 
 # don't know what the options are... presumably 1e-9 is the unit (in meters)
 beams = gdspy.Cell('beams')
@@ -2418,7 +2425,8 @@ for iXM in range(1):
 			for iY in range(y_start, num_rows):
 				# now make a specific design
 				param2 = copy(param)
-
+				param2['extra_notches_for_grating_pad']=False
+				param2['final_final_extra_notches_GC_pad']=False
 				param2['meander'] = True
 				if iX==0:
 					param2["meander"]=True
@@ -2686,4 +2694,4 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('remove pinch points fatter.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('removed extra meander notches.gds', unit=1.0e-9, precision=1.0e-10)
