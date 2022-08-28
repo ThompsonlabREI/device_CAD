@@ -164,6 +164,14 @@ def write_beams(cell, param):
 			]))
 
 		if param['meander'] is True:
+			print("num_tether_device_param" + str(param['num_tether_device']))
+			#redefine beam width to tether_x just for these top tether creations
+			param['beam_width_saved'] = param['beam_width']
+			print('outerbox_x_min param' + str(outerbox_x_min))
+			print('outerbox_x_max param' + str(outerbox_x_max))
+			print('outerbox_y_min param' + str(outerbox_y_min))
+			print('outerbox_y_max param' + str(outerbox_y_max))
+			param['beam_width'] = param['tether_x']
 			for iTT in range(param['num_tether_device']):  # SC adding vertical block pinch points
 				cell.add(gdspy.Polygon(1, [  # bottom block linkers
 					(outerbox_x_min+ param['beam_width'] / 2+param['grating_pad_offset'] + (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_min + param['beam_width'] / 2 - param['beam_width'] / 2),
@@ -197,6 +205,7 @@ def write_beams(cell, param):
 			# 		(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_max - param['notch_end_offset'] - param['notch_end_width'] / 2 - param['beam_width'] / 2),
 			# 		(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2, outerbox_y_max - param['notch_end_offset'] + param['notch_end_width'] / 2 - param['beam_width'] / 2),
 			# 		(outerbox_x_max- param['beam_width'] / 2-param['grating_pad_offset'] - (iTT ) * param['beam_len'] / (param['num_tether_device'] ) - param['beam_width'] / 2 + param['notch_end_depth'], outerbox_y_max - param['notch_end_offset'] - param['beam_width'] / 2)]))
+			param['beam_width'] = param['beam_width_saved']
 
 		else:
 			for iTT in range(param['num_tether_device']):  # SC adding vertical block pinch points
@@ -1644,19 +1653,21 @@ def write_beams(cell, param):
 						(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] / 2)]))
 
 				if param['extra_left_notches'] is True:
-					print("extra_left_notches param value" + str(param['extra_left_notches']))
 
 					#  Add linkers and notches pinches in left and right frame:
 					if param['meander'] is True:
+						#redefine beam width just for making left and right notches
+						param['beam_width_saved'] = param['beam_width']
+						param['beam_width'] = param2['separation_notches_meander_sides']
 						a=int(outerbox_y_max - outerbox_y_min- param['box_buffer'] - param['beam_width'])/(1+param2['separation_notches_meander_sides']+param['beam_width'])
-
+						print("num left notches" + str(a))
 						for i in range(a): #3+param['waveguide_with_end_mirror']*3
 							# left
 							cell.add(gdspy.Polygon(1, [
-								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 1.0),
-								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 1.0),
-								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2 - param['vert_linker_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 1.0),
-								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2 - param['vert_linker_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 1.0)
+								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 2.0),
+								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0),
+								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2 - param['vert_linker_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0),
+								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left'] - param2['width_taper'] / 2 - param['vert_linker_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 2.0)
 							]))
 						# 	cell.add(gdspy.Polygon(3, [
 						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['beam_width'] / 2.0),
@@ -1667,13 +1678,19 @@ def write_beams(cell, param):
 						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] - param['notch_end_width'] / 2.0, outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0 ),
 						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2- param['notch_end_offset'], outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) - param['notch_end_depth'] + param['beam_width'] / 2.0),
 						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] + param['notch_end_width'] / 2.0,outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0)]))
+
 						#right
+						param['beam_width'] = param['beam_width_saved']
+						a = int(outerbox_y_max - outerbox_y_min - param['box_buffer'] - param['beam_width']) / (
+									1 + param2['separation_notches_meander_sides'] + param['beam_width'])
+
 						for i in chain(range(a/2+1), range(a/2+7, a)):
+							print("tether num from chain" + str(i))
 							cell.add(gdspy.Polygon(1, [
-								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 1.0),
-								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min  + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 1.0),
-								(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 1.0),
-								(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 1.0)
+								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0),
+								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min  + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 2.0),
+								(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 2.0),
+								(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0)
 							]))
 
 							# cell.add(gdspy.Polygon(3, [
@@ -2505,12 +2522,13 @@ for iXM in range(1):
 					param2['num_mirror_holes'] = param2['mirror_len']
 					param2['aper_cav'] = 349.1 #298
 					param2['aper_mir'] = 435.2 #343
-					param2['beam_width'] =  600 # SRP: I think this defines the PhC wy
+					param2['beam_width'] = 600 # SRP: I this defines the PhC wy AND the top and bottom silicon tether width_x
+
 					param2['hole_rad'] = 236.8 / 2.0 # (145.6-20) / 2.0  # SC changes -40 to -20 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
 					param2['hole_rad2'] = 407.03 / 2.0  #(307.8-10) / 2.0  # SC changes -30 to -10 for cold developing Decided to add offset to correct for bulk broadening from exposure and/or etching
 					param2['vflagbeam_q'] = False
 					param2['y_spacing_between_wabguides'] = 00
-
+					param2['tether_x'] = 5400
 					param2['num_grating_periods_x'] = 20
 					param2['num_grating_periods_y'] = 31  # SC total grating y width 12.6 um, maximum overlap with fiber
 					param2['grating_period_x_start'] = 700
@@ -2694,4 +2712,4 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('removed extra meander notches.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('right and left tether widths changed.gds', unit=1.0e-9, precision=1.0e-10)
