@@ -123,6 +123,7 @@ def write_beams(cell, param):
 				(outerbox_x_max - param['grating_pad_offset'] - param['vert_linker_width_right'], outerbox_y_max - param['box_buffer'] - param['beam_width'] / 2)
 			]))
 
+
 		else:
 			cell.add(gdspy.Polygon(1, [  # bottom block holder
 				(outerbox_x_max - param['grating_pad_offset'] - param['vert_linker_width_right'], outerbox_y_min + param['box_buffer'] + param['beam_width'] / 2),
@@ -167,10 +168,6 @@ def write_beams(cell, param):
 			print("num_tether_device_param" + str(param['num_tether_device']))
 			#redefine beam width to tether_x just for these top tether creations
 			param['beam_width_saved'] = param['beam_width']
-			print('outerbox_x_min param' + str(outerbox_x_min))
-			print('outerbox_x_max param' + str(outerbox_x_max))
-			print('outerbox_y_min param' + str(outerbox_y_min))
-			print('outerbox_y_max param' + str(outerbox_y_max))
 			param['beam_width'] = param['tether_x']
 			for iTT in range(param['num_tether_device']):  # SC adding vertical block pinch points
 				cell.add(gdspy.Polygon(1, [  # bottom block linkers
@@ -845,6 +842,7 @@ def write_beams(cell, param):
 					#PhC waveguide top
 					if iB==1:
 						if iM % 2==0:
+
 							cell.add(gdspy.Polygon(1, [
 								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param2['width_taper'] / 2, circle_center_y + S * (outer_radius350 + param['wg'] + 2 * iM * param['bus_bend_radius'] + (1 + iM) * param['y_spacing_between_wabguides'])),
 								(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param2['width_taper'] / 2, circle_center_y + S * (outer_radius350 + param['wg'] + param['beam_width'] + 2 * iM * param['bus_bend_radius'] + (1 + iM) * param['y_spacing_between_wabguides'])),
@@ -1122,12 +1120,21 @@ def write_beams(cell, param):
 						(circle_center_x + param['Len_bus_waveguide'] + param['bus_bend_radius'] + param2['buffer_siliconpad_bendwaveguide'] + param2['width_taper'] / 2, y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width']),
 					]))
 
-					cell.add(gdspy.Polygon(1, [  # left
+					cell.add(gdspy.Polygon(1, [  # left SRP: this is where the silicon rectangle gets added to the top PhC waveguide, connecting to outer edge
 						(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param2['width_taper'] / 2, y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width']),
-						(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param2['width_taper'] / 2, y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30),
-						(circle_center_x, y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30),
+						(circle_center_x - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param2['width_taper'] / 2, y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30-50),
+						(circle_center_x, y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30-50),
 						(circle_center_x, y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width'])
 					]))
+
+					yvalue_to_save = y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width']
+					yvalue_to_save_2 = y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30-50
+					print(yvalue_to_save)
+					print(yvalue_to_save_2)
+
+
+					# print("y for point 1" + str(y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width']))
+					# print("y for point 3" + str(y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30))
 
 
 			# modified beam widening taper (GRATINGS)
@@ -2167,7 +2174,7 @@ endsweep = 1.03+xin
 
 #CaWO4 PhC hole scale
 
-num_rows = 3 #repetition in y
+num_rows = 2 #repetition in y
 num_cols = 2 #reptition in x
 
 grating_airhole_scale_min = 0.85
@@ -2719,4 +2726,4 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('add in grating air hole sweep.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('deal with spacing issue.gds', unit=1.0e-9, precision=1.0e-10)
