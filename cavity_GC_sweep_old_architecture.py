@@ -1097,10 +1097,10 @@ def write_beams(cell, param):
 						s2 = 1.0
 					# start with the tether at the center of the PhCs
 				if iB==1:
-					cell.add(gdspy.Polygon(1, [
+					cell.add(gdspy.Polygon(1, [ #horribly jank way to get tether for middle of top phc waveguide to connect to the top supporting frame
 						(circle_center_x - param2['width_tether_phc'] / 2 + param['Len_bus_waveguide'] / 2+2*param['aper_cav'], y - s2 * param['box_buffer'] - s2 * param['beam_width']/2.003 - s2 * param['supporting_bar_width']),
-						(circle_center_x - param2['width_tether_phc'] / 2 + param['Len_bus_waveguide'] / 2+2*param['aper_cav'], y - s2 * param['box_buffer'] - s2 * param['beam_width']/2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30),
-						(circle_center_x + param2['width_tether_phc'] / 2 + param['Len_bus_waveguide'] / 2+2*param['aper_cav'], y - s2 * param['box_buffer'] - s2 * param['beam_width']/2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30),
+						(circle_center_x - param2['width_tether_phc'] / 2 + param['Len_bus_waveguide'] / 2+2*param['aper_cav'], y - s2 * param['box_buffer'] - s2 * param['beam_width']/2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30-50),
+						(circle_center_x + param2['width_tether_phc'] / 2 + param['Len_bus_waveguide'] / 2+2*param['aper_cav'], y - s2 * param['box_buffer'] - s2 * param['beam_width']/2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30-50),
 						(circle_center_x + param2['width_tether_phc'] / 2 + param['Len_bus_waveguide'] / 2+2*param['aper_cav'], y - s2 * param['box_buffer'] - s2 * param['beam_width']/2.003 - s2 * param['supporting_bar_width'])
 					]))
 
