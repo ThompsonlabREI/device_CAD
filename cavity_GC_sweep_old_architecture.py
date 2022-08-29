@@ -1036,10 +1036,10 @@ def write_beams(cell, param):
 
 				# add cuts inside top pad for HF:
 				if iB==1:
-					aa=14
+					aa=13 #this is number of air holes for HF flow on the row that is the 270 degree bus
 					bb=int((param['waveguide_with_end_mirror']) / 2) + 1
 				else:
-					aa=19
+					aa=19 #this is number of air holes for HF flow on all other rows
 					bb=6
 
 				for iM in range(bb+1):
@@ -1686,7 +1686,6 @@ def write_beams(cell, param):
 
 						# for i in chain(range(a/2+1), range(a/2+7, a)):
 						for i in range(a):
-							print("tether num from chain" + str(i))
 							cell.add(gdspy.Polygon(1, [
 								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0),
 								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min  + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) + param['beam_width'] / 2.0),
@@ -2713,4 +2712,4 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('right and left tether widths changed.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('dealing with air hole through mirror of 270 bus.gds', unit=1.0e-9, precision=1.0e-10)
