@@ -324,7 +324,8 @@ def write_beams(cell, param):
 			# Now write the 2D triangular air holes for the coupling grating
 			# air_hole_diameter_list = numpy.asarray(air_hole_diameter_list_base) + grating_airholescale_list[iB] / (param['num_grating_periods_x'] - 1.0) * numpy.asarray(range(param['num_grating_periods_x']))#SC AirGapwidth linear Offset
 			# air_hole_diameter_list = (numpy.asarray(air_hole_diameter_list_base) + constgrating_airholescale_list[iB])/1.13 # SO 2021
-			air_hole_diameter_list = numpy.asarray(air_hole_diameter_list_base) + constgrating_airholescale_list[iB] # take off the 1.13 scaling factor so that GC hole sizes match lumerical
+			air_hole_diameter_list = numpy.asarray(air_hole_diameter_list_base)*constgrating_airholescale_list[iB] #SRP: varies from 0.85 to 1.05 for first run
+			# air_hole_diameter_list = numpy.asarray(air_hole_diameter_list_base) + constgrating_airholescale_list[iB] # take off the 1.13 scaling factor so that GC hole sizes match lumerical
 
 			grating_periods_x_list = numpy.zeros(len(air_hole_diameter_list)) + param['grating_period_x_start']
 			for iG in range(1, len(air_hole_diameter_list), 1):
@@ -1660,7 +1661,6 @@ def write_beams(cell, param):
 						param['beam_width_saved'] = param['beam_width']
 						param['beam_width'] = param2['separation_notches_meander_sides']
 						a=int(outerbox_y_max - outerbox_y_min- param['box_buffer'] - param['beam_width'])/(1+param2['separation_notches_meander_sides']+param['beam_width'])
-						print("num left notches" + str(a))
 						for i in range(a): #3+param['waveguide_with_end_mirror']*3
 							# left
 							cell.add(gdspy.Polygon(1, [
@@ -2167,8 +2167,13 @@ endsweep = 1.03+xin
 
 #CaWO4 PhC hole scale
 
-num_rows = 2 #repetition in y
+num_rows = 3 #repetition in y
 num_cols = 2 #reptition in x
+
+grating_airhole_scale_min = 0.85
+grating_airhole_scale_max = 1.05
+grating_airhole_scale_factors = numpy.linspace(grating_airhole_scale_min,grating_airhole_scale_max,num=num_rows)
+print("grating air hole scale factors" + str(grating_airhole_scale_factors))
 
 device_y_um = 108
 device_y_nm = device_y_um * 1000
@@ -2546,7 +2551,9 @@ for iXM in range(1):
 					#GC sweep parameters
 					#iY is counted from bottom to top
 					if param2['meander'] == True:
-						constgrating_airholescale_list = [0, 0]
+						grating_airhole_scale_factor_this_row = grating_airhole_scale_factors[iY]
+						print("this scale factor" + str(grating_airhole_scale_factor_this_row))
+						constgrating_airholescale_list = [grating_airhole_scale_factor_this_row, grating_airhole_scale_factor_this_row]
 
 						# if iY == 0:
 						# 	constgrating_airholescale_list = [10, 10]
@@ -2712,4 +2719,4 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('dealing with air hole through mirror of 270 bus.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('add in grating air hole sweep.gds', unit=1.0e-9, precision=1.0e-10)
