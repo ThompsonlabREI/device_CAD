@@ -105,7 +105,6 @@ def write_beams(cell, param):
 
 	if param['support_tether_q'] is True: # SC adding horizantal supporting tether
 		if param['meander'] is True:
-			print("support_tether_q value" + str(param['support_tether_q']))
 			beam_center_x = param['array_orig_x'] - param['beam_len'] / 2.0
 			circle_center_x = beam_center_x - param['beam_len'] / 2.0 + 2 * param2['vert_linker_width_left'] + param2['vert_linker_offset'] + 1.5 * param['beam_width']
 			cell.add(gdspy.Polygon(1, [  # bottom block holder
@@ -165,7 +164,6 @@ def write_beams(cell, param):
 			]))
 
 		if param['meander'] is True:
-			print("num_tether_device_param" + str(param['num_tether_device']))
 			#redefine beam width to tether_x just for these top tether creations
 			param['beam_width_saved'] = param['beam_width']
 			param['beam_width'] = param['tether_x']
@@ -1127,11 +1125,6 @@ def write_beams(cell, param):
 						(circle_center_x, y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width'])
 					]))
 
-					yvalue_to_save = y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width']
-					yvalue_to_save_2 = y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30-50
-					print(yvalue_to_save)
-					print(yvalue_to_save_2)
-
 
 					# print("y for point 1" + str(y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width']))
 					# print("y for point 3" + str(y - s2 * param['box_buffer'] - s2 * param['beam_width'] / 2.003 - s2 * param['supporting_bar_width'] - s2 * param2['spacing_phc-vertical_buffer']-30))
@@ -1508,7 +1501,7 @@ def write_beams(cell, param):
 				for iHx in range(param['num_mirror_holes'] + param2['cavity_len'] + param2['middle_mirror_len'] / 2):
 					hole_scale_list_phc[(param2['num_phc'] / 2 - 2) * (param2['cavity_len'] + 2) + iHx + param['num_mirror_holes'] + param2['cavity_len'] + param2['middle_mirror_len'] / 2 + y * holes_in_half_waveguide] = scale_list_phc[param2['num_phc'] / 2 - 2 + 1 + y * param2['num_phc'] / 2]
 
-			# print("scale list phc from meander variation" + str(scale_list_phc))
+			print("scale list phc from meander variation" + str(scale_list_phc))
 			# print("scale list for each hole" + str(hole_scale_list_phc))
 			#hole_scale_list_phc is assigned from scale_list_phc
 
@@ -2175,7 +2168,7 @@ endsweep = 1.03+xin
 #CaWO4 PhC hole scale
 
 num_rows = 2 #repetition in y
-num_cols = 2 #reptition in x
+num_cols = 3 #reptition in x
 
 grating_airhole_scale_min = 0.85
 grating_airhole_scale_max = 1.05
@@ -2199,14 +2192,24 @@ param['end_sweep_GC10_CaWO4'] = 1.2
 #xin = numpy.linspace(-0.1 -0.004*10 , 0, 4)
 # xin = numpy.linspace(-0.005*8, 0.005*4, 4) #expected shift of centr. wav. -8 nm -4 nm 0 4nm
 xin = numpy.linspace(-0.005*8, 0.005*4, num_cols)
+print("xin " + str(xin))
 #startsweep will be the scaling factor for the smallest holes in the meander
 startsweep =(1 +xin)*0.93
 #endsweep will be the scaling factor for the biggest holes in the meander
 endsweep =(1 +xin)*0.99
 # for 0.93 - 0.99 I expect around 12 nm sweep of PhC wav. res. for single meander
 
-startsweep_CaWO4=startsweep
-endsweep_CaWO4=endsweep
+xin_wider = numpy.linspace(-0.1 -0.004*10 , 0, num_cols)
+print("xin wider" + str(xin_wider))
+startsweep_wider =(1 +xin_wider)*0.91
+endsweep_wider =(1 +xin_wider)*1.04   #0.849
+
+print("start sweep wider" + str(startsweep_wider))
+print("end sweep wider" + str(endsweep_wider))
+
+startsweep_CaWO4=startsweep_wider
+endsweep_CaWO4=endsweep_wider
+
 
 # print ("YSOstart" + str(startsweep))
 # print ("YSOend" + str(endsweep))
@@ -2559,7 +2562,7 @@ for iXM in range(1):
 					#iY is counted from bottom to top
 					if param2['meander'] == True:
 						grating_airhole_scale_factor_this_row = grating_airhole_scale_factors[iY]
-						print("this scale factor" + str(grating_airhole_scale_factor_this_row))
+
 						constgrating_airholescale_list = [grating_airhole_scale_factor_this_row, grating_airhole_scale_factor_this_row]
 
 						# if iY == 0:
@@ -2726,4 +2729,4 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('deal with spacing issue.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('sweep cavity air hole size to get wavelength overlap.gds', unit=1.0e-9, precision=1.0e-10)
