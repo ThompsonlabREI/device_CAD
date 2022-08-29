@@ -1680,11 +1680,12 @@ def write_beams(cell, param):
 						# 		(circle_center_x  - param['bus_bend_radius'] - param2['buffer_siliconpad_bendwaveguide'] - param['vert_linker_width_left']-param2['width_taper']/2 - param['notch_end_offset'] + param['notch_end_width'] / 2.0,outerbox_y_max - param['box_buffer'] - param['beam_width'] - (i) * (param2['separation_notches_meander_sides']+param['beam_width']) + param['beam_width'] / 2.0)]))
 
 						#right
-						param['beam_width'] = param['beam_width_saved']
-						a = int(outerbox_y_max - outerbox_y_min - param['box_buffer'] - param['beam_width']) / (
-									1 + param2['separation_notches_meander_sides'] + param['beam_width'])
+						# param['beam_width'] = param['beam_width_saved']
+						# a = int(outerbox_y_max - outerbox_y_min - param['box_buffer'] - param['beam_width']) / (
+						# 			1 + param2['separation_notches_meander_sides'] + param['beam_width'])
 
-						for i in chain(range(a/2+1), range(a/2+7, a)):
+						# for i in chain(range(a/2+1), range(a/2+7, a)):
+						for i in range(a):
 							print("tether num from chain" + str(i))
 							cell.add(gdspy.Polygon(1, [
 								(beam_center_x + param['beam_len'] / 2.0, outerbox_y_min + param['box_buffer'] + param['beam_width'] + (i) * (param2['separation_notches_meander_sides'] + param['beam_width']) - param['beam_width'] / 2.0),
@@ -1705,14 +1706,14 @@ def write_beams(cell, param):
 
 							#extra in right:
 							# param['array_orig_y'] + iB * param['beam_spacing']
-							for ix in range(2):
-								cell.add(gdspy.Polygon(1, [
-									(beam_center_x + param['beam_len'] / 2.0, param['array_orig_y'] + ix * param['beam_spacing'] - param['beam_width'] / 2.0),
-									(beam_center_x + param['beam_len'] / 2.0, param['array_orig_y'] + ix * param['beam_spacing'] + param['beam_width'] / 2.0),
-									(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], param['array_orig_y'] + ix * param['beam_spacing'] + param['beam_width'] / 2.0),
-									(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], param['array_orig_y'] + ix * param['beam_spacing'] - param['beam_width'] / 2.0)
-								]))
-
+							# for ix in range(2):
+							# 	cell.add(gdspy.Polygon(1, [
+							# 		(beam_center_x + param['beam_len'] / 2.0, param['array_orig_y'] + ix * param['beam_spacing'] - param['beam_width'] / 2.0),
+							# 		(beam_center_x + param['beam_len'] / 2.0, param['array_orig_y'] + ix * param['beam_spacing'] + param['beam_width'] / 2.0),
+							# 		(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], param['array_orig_y'] + ix * param['beam_spacing'] + param['beam_width'] / 2.0),
+							# 		(beam_center_x + param['beam_len'] / 2.0 - param['vert_linker_offset'], param['array_orig_y'] + ix * param['beam_spacing'] - param['beam_width'] / 2.0)
+							# 	]))
+						param['beam_width'] = param['beam_width_saved']
 					else:
 						#  Add first horizontal linker for notch
 						cell.add(gdspy.Polygon(1, [
@@ -2514,7 +2515,7 @@ for iXM in range(1):
 
 				if param2['hoste'] == 3:  # 3==CaWO4
 					# pass
-					param2['wg'] = 500 #figure out what this waveguide thing does
+					param2['wg'] = 500 #this does kapp_wg spacing
 					param2["resonance"] = target_GC_center_lambda_nm
 					param2["2-axes"] = True
 					param2['cavity_len'] = cavity_list_CaWO4[iY]
