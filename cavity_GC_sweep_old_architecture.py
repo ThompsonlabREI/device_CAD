@@ -295,7 +295,7 @@ def write_beams(cell, param):
 			cell.add(grating_pad_pts)
 
 			# add top linker beam for grating coupler
-			grating_beam_top_pts=gdspy.Polygon(1,[
+			grating_beam_top_pts=gdspy.Polygon(1,[ #SRP checking if this is the line that adds weird cutout
 				(grating_pad_center_x + param['grating_pad_length']/2.0, grating_pad_center_y + param['grating_pad_width']/2.0),
 				(grating_pad_center_x + param['grating_pad_length']/2.0 + param['grating_pad_offset'], grating_pad_center_y + param['grating_pad_width']/2.0),
 				(grating_pad_center_x + param['grating_pad_length']/2.0 + param['grating_pad_offset'], grating_pad_center_y + param['grating_pad_width']/2.0 - param['beam_width']),
@@ -303,7 +303,7 @@ def write_beams(cell, param):
 				(grating_pad_center_x + param['grating_pad_length']/2.0, grating_pad_center_y + param['grating_pad_width']/2.0)
 				])
 
-			cell.add(grating_beam_top_pts)
+			# cell.add(grating_beam_top_pts)
 
 			# add bottom linker beam for grating coupler
 			grating_beam_bot_pts=gdspy.Polygon(1,[
@@ -1033,11 +1033,11 @@ def write_beams(cell, param):
 
 				# add cuts inside top pad for HF:
 				if iB==1:
-					aa=13 #this is number of air holes for HF flow on the row that is the 270 degree bus
+					aa=15 #this is number of air holes for HF flow on the row that is the 270 degree bus
 					bb=int((param['waveguide_with_end_mirror']) / 2) + 1
 				else:
 					aa=19 #this is number of air holes for HF flow on all other rows
-					bb=6
+					bb=3
 
 				for iM in range(bb+1):
 
@@ -2167,7 +2167,7 @@ endsweep = 1.03+xin
 
 #CaWO4 PhC hole scale
 
-num_rows = 2 #repetition in y
+num_rows = 3 #repetition in y
 num_cols = 3 #reptition in x
 
 grating_airhole_scale_min = 0.85
@@ -2636,7 +2636,7 @@ for iXM in range(1):
 				param2['num_hole_cluster'] = 2
 				param2['num_beams'] = param2['num_hole_size'] * param2['num_hole_cluster']
 
-				param2['num_phc'] = 8  # number of PhCs per waveguide slub
+				param2['num_phc'] = 4  # number of PhCs per waveguide slub
 				param2['bus_taper_len'] = 2000
 				param2['bus_bend_radius'] = 6000
 				param2['Len_bus_waveguide'] = (2*param2['mirror_len']+ (param2['num_phc'])*cavity_list_CaWO4[1]+(param2['num_phc']-1)*param2['middle_mirror_len']+2)*param2['aper_mir']
@@ -2674,7 +2674,7 @@ for iXM in range(1):
 				param2['width_silicon_between_HF_cuts']=8000
 				param2['width_HF_cuts']=1000
 				param2['num_mirror_holes_end_meander']=18 # has to be a multiple of 6
-				param2['separation_notches_meander_sides']=4500 #separation between notches on siz
+				param2['separation_notches_meander_sides']=4600 #separation between notches on sides SRP: person in the loop tuning such that we don't end up with skinny sidecuts
 				param2['width_wider_bus_wavguide_tether'] = 200
 
 				if param2['meander'] is True:
@@ -2729,4 +2729,4 @@ for iXM in range(1):
 				write_beams(beams, param2)
 				param3 = copy(param2)
 
-gdspy.gds_print('sweep cavity air hole size to get wavelength overlap.gds', unit=1.0e-9, precision=1.0e-10)
+gdspy.gds_print('updating HF flow holes.gds', unit=1.0e-9, precision=1.0e-10)
