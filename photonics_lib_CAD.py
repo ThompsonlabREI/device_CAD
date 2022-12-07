@@ -53,8 +53,11 @@ if __name__ == "__main__":
     # silicon_skeleton_list = []
     grating_pad_center = [0,0]
     GC_hole_layer = 0
+    GC_tether_x = 1000 #could try sweeping
+    num_tether_along_taper = 3 #could try sweeping
+
     for GC_scale in GC_scales:
-        grating_coupler = subwavelength_grating(air_hole_diameter_list_base,GC_scale,GCparams,grating_pad_center,GC_hole_layer)
+        grating_coupler = subwavelength_grating(air_hole_diameter_list_base,GC_scale,GCparams,grating_pad_center,GC_hole_layer, num_tether_along_taper, GC_tether_x)
         grating_coupler_list.append(grating_coupler)
         # silicon_skeleton_list.append(silicon_skeleton)
     # grid_of_holes = pg.grid(grating_coupler_list, spacing=(xspacing,yspacing),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')

@@ -49,7 +49,9 @@ def generate_grating_holes(air_hole_diameter_list_base,
 
 
 def generate_silicon_skeleton(
-    GCparams
+    GCparams,
+    num_tether_along_taper,
+    GC_tether_x_nm
 ):
     test_PhC_bus_len = 14000
     P1 = pp.straight(length=GCparams['grating_pad_length'])
@@ -73,7 +75,9 @@ def generate_silicon_skeleton(
     silicon_skeleton_cutout_layer = 1
 
     pad_and_taper = Device()
-    pad_and_taper.add_ref(WG_trans).movex(GCparams['grating_pad_length'])
+    taper_wg = pad_and_taper << WG_trans
+    taper_wg.movex(GCparams['grating_pad_length'])
+    # pad_and_taper.add_ref(WG_trans).movex(GCparams['grating_pad_length'])
     pad_and_taper.add_ref(pad_ref)
     # outline = pg.outline(pad_and_taper,distance=1000,precision=1e-9,max_points=8000,layer=silicon_skeleton_cutout_layer)
     inversion = pg.invert(pad_and_taper, border=1000, precision=1e-9, layer=silicon_skeleton_cutout_layer)
@@ -84,11 +88,24 @@ def generate_silicon_skeleton(
     outline_taper = pg.outline(wg3,distance=1000,precision=1e-9,layer=3)
     skeleton_and_outline.add_ref(outline_taper)
     silicon_cutout_only = pg.boolean(A=outline_taper,B=pad_and_taper,operation='not',precision=1e-9,num_divisions=[1,1],layer=4)
-    skeleton_and_outline.add_ref(silicon_cutout_only)
+    # skeleton_and_outline.add_ref(silicon_cutout_only)
     # skeleton_larger = pad_and_taper.copy(name='newcell',scale=1.1)
     # skeleton_larger.remap_layers({2:3})
     #get the outline itself that should remain
+    tether_spacing = GCparams['taper_length']/(1+num_tether_along_taper)
+    tethers_collection = Device()
+    for tether_index in range(1,num_tether_along_taper+1):
+        #calculate tether x
+        tetherx = tether_index*tether_spacing
+        tether_path = pp.straight(length=GC_tether_x_nm)
+        tether_ref = tether_path.extrude(silicon_cutout_only.ysize,layer=2)
+        tether_ref.movex(tetherx+GCparams['grating_pad_length'])
+        tethers_collection.add_ref(tether_ref)
+        # tether_ref.move(origin=[taper_wg.xmin,pad_ref.y],destination=[taper_wg.xmin+tetherx,pad_ref.y])
+        # tether_ref.movex(tetherx)
 
+    cutout_including_tethers = pg.boolean(A=silicon_cutout_only,B=tethers_collection,operation='not',precision=1e-9,num_divisions=[1,1],layer=0)
+    skeleton_and_outline.add_ref(cutout_including_tethers)
     return [skeleton_and_outline,pad.center]
 
 def subwavelength_grating(
@@ -96,7 +113,9 @@ def subwavelength_grating(
     constgrating_airhole_scale_factor,
     GCparams,
     grating_pad_center,
-    GC_hole_layer
+    GC_hole_layer,
+    num_tether_along_taper,
+    GC_tether_x_nm
 ):
     grating_holes = generate_grating_holes(air_hole_diameter_list_base,
     constgrating_airhole_scale_factor,
@@ -104,7 +123,7 @@ def subwavelength_grating(
     grating_pad_center,
     GC_hole_layer)
 
-    [silicon_stuff,pad_center] = generate_silicon_skeleton(GCparams)
+    [silicon_stuff,pad_center] = generate_silicon_skeleton(GCparams,num_tether_along_taper,GC_tether_x_nm)
 
     #align the silicon skeleton and holes
     grating_holes.center=pad_center
