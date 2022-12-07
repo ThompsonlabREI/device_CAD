@@ -70,6 +70,7 @@ if __name__ == "__main__":
     param['grating_pad_spacing'] = 3000
     param['resonance']=1544
     param['n_circle_points_GC'] = 110
+    param['PhC_wy'] = 600
     grating_x_num = range(param['num_grating_periods_x'])  # range starts 0,1,2...num_grating_period_x-1
     air_hole_diameter_list_base = [-0.09594 * param['a_2DPhC'] * (param['grating_first_index'] - param['grating_delta_index'] * x) ** 4 + 0.9546 * param['a_2DPhC'] * (param['grating_first_index'] - param['grating_delta_index'] * x) ** 3 - 3.586 * param['a_2DPhC'] * (
                                                param['grating_first_index'] - param['grating_delta_index'] * x) ** 2 + 5.542 * param['a_2DPhC'] * (
@@ -150,8 +151,9 @@ if __name__ == "__main__":
 
     GC_scales = [0.97,1.01,1.05]
     grating_coupler_list = []
+    silicon_skeleton_list = []
     for GC_scale in GC_scales:
-        device_format_holes = subwavelength_grating(air_hole_diameter_list_base,
+        [device_format_holes,silicon_skeleton] = subwavelength_grating(air_hole_diameter_list_base,
         GC_scale,
         param['grating_period_x_start'],
         param['phaseFactor'],
@@ -165,15 +167,26 @@ if __name__ == "__main__":
         param['grating_pad_width'],
         param['grating_pad_buffer'],
         0,
-        0)
+        0,
+        0,
+        param['PhC_wy'])
         grating_coupler_list.append(device_format_holes)
+        silicon_skeleton_list.append(silicon_skeleton)
     grid_of_holes = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
+    grid_of_silicon = pg.grid(silicon_skeleton_list, spacing=(5,1),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
+
     # grid_of_holes_2 = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
     big_boy = Device()
     grid1 = big_boy << grid_of_holes
     grid2 = big_boy << grid_of_holes
+    silicon_structure1 = big_boy << grid_of_silicon
+    silicon_structure2 = big_boy << grid_of_silicon
     bounding_box_grid1 = grid1.get_bounding_box()
+    silicon_structure_box_grid1 = silicon_structure1.get_bounding_box()
     grid2.move(origin=bounding_box_grid1[0],destination=bounding_box_grid1[1])
+    silicon_structure2.move(origin=silicon_structure_box_grid1[0],destination=silicon_structure_box_grid1[1])
+
+    # big_boy.remap_layers({0:1})
     # D = pg.gridsweep(
     #     function=pg.circle,
     #     param_x={'radius': [10, 20, 30, 40, 50]},
