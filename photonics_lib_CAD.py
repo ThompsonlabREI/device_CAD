@@ -12,6 +12,8 @@ import numpy
 import gdspy
 from grating_def import *
 from GC_def import *
+import phidl.geometry as pg
+from phidl import quickplot as qp
 
 if __name__ == "__main__":
     # Examples
@@ -75,7 +77,7 @@ if __name__ == "__main__":
 
     constgrating_airholescale = 1.01
     SW_GC_cell = lib.new_cell("N_SW_GC")
-    SW_GC = subwavelength_grating(air_hole_diameter_list_base,
+    [SW_GC,disregard] = subwavelength_grating(air_hole_diameter_list_base,
         constgrating_airholescale,
         param['grating_period_x_start'],
         param['phaseFactor'],
@@ -145,4 +147,43 @@ if __name__ == "__main__":
 
     # Save to a gds file and check out the output
     lib.write_gds("photonics_1layersaved.gds",cells=[c])
-    gdspy.LayoutViewer(lib)
+
+    GC_scales = [0.97,1.01,1.05]
+    grating_coupler_list = []
+    for GC_scale in GC_scales:
+        [GC_holes,device_format_holes] = subwavelength_grating(air_hole_diameter_list_base,
+        GC_scale,
+        param['grating_period_x_start'],
+        param['phaseFactor'],
+        param['grating_delta_index'],
+        param["resonance"],
+        param['num_grating_periods_x'],
+        param['num_grating_periods_y'],
+        param['n_circle_points_GC'],
+        param['a_2DPhC'],
+        param['grating_pad_length'],
+        param['grating_pad_width'],
+        param['grating_pad_buffer'],
+        0,
+        0,
+        SW_GC_cell)
+        grating_coupler_list.append(device_format_holes)
+    grid_of_holes = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(3,1),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
+    D = pg.gridsweep(
+        function=pg.circle,
+        param_x={'radius': [10, 20, 30, 40, 50]},
+        param_y={'layer': [0, 5, 9]},
+        param_defaults={},
+        param_override={},
+        spacing=(30, 10),
+        separation=True,
+        align_x='x',
+        align_y='y',
+        edge_x='x',
+        edge_y='ymax',
+        label_layer=None)
+
+    # qp(D)
+    D.write_gds('phidlcheck.gds')
+    grid_of_holes.write_gds('gridsweepcheck.gds')
+    # gdspy.LayoutViewer(lib)

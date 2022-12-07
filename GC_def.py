@@ -1,5 +1,7 @@
 import numpy
 import gdspy
+from phidl import Device
+import phidl.geometry as pg
 
 def subwavelength_grating(
     air_hole_diameter_list_base,
@@ -19,6 +21,7 @@ def subwavelength_grating(
     grating_pad_center_y,
     GC_holes_cell,
 ):
+    SWG_holes = Device()
 
     air_hole_diameter_list = numpy.asarray(air_hole_diameter_list_base) * constgrating_airhole_scale_factor  # SRP: varies from 0.85 to 1.05 for first run
 # air_hole_diameter_list = numpy.asarray(air_hole_diameter_list_base) + constgrating_airholescale_list[iB] # take off the 1.13 scaling factor so that GC hole sizes match lumerical
@@ -34,9 +37,18 @@ def subwavelength_grating(
 
             grating_column_start_x = grating_start_x + air_hole_diameter_list[iGx] / 2.0 + numpy.sum(grating_periods_x_list[:iGx])
             grating_column_start_y = grating_start_y + numpy.sqrt(3) * a_2DPhC_nm * iGy
-
+            hole = pg.circle(radius = air_hole_diameter_list[iGx] / 2.0, angle_resolution=2.5,layer=0)
+            # hole2 = pg.circle(radius = air_hole_diameter_list[iGx] / 2.0, angle_resolution=2.5,layer=0)
+            # hole3 = pg.circle(radius = air_hole_diameter_list[iGx] / 2.0, angle_resolution=2.5,layer=0)
+            hole1 = SWG_holes << hole
+            hole2 = SWG_holes << hole
+            hole3 = SWG_holes << hole
+            hole1.move(origin=[0,0],destination=[grating_column_start_x, grating_column_start_y])
+            hole2.move(origin=[0, 0], destination=[grating_column_start_x + a_2DPhC_nm, grating_column_start_y])
+            hole3.move(origin=[0,0],destination=[grating_column_start_x + a_2DPhC_nm / 2.0,grating_column_start_y + a_2DPhC_nm / 2.0 * numpy.sqrt(3)])
+            # SWG_holes.add([hole1,hole2,hole3])
             GC_holes_cell.add(gdspy.Round([grating_column_start_x, grating_column_start_y], air_hole_diameter_list[iGx] / 2.0, number_of_points=num_points))
             GC_holes_cell.add(gdspy.Round([grating_column_start_x + a_2DPhC_nm, grating_column_start_y], air_hole_diameter_list[iGx] / 2.0, number_of_points=num_points))
             if iGy < (num_grating_periods_y - 1):
                 GC_holes_cell.add(gdspy.Round( [grating_column_start_x + a_2DPhC_nm / 2.0,grating_column_start_y + a_2DPhC_nm / 2.0 * numpy.sqrt(3)],air_hole_diameter_list[iGx] / 2.0, number_of_points=num_points))
-    return GC_holes_cell
+    return [GC_holes_cell,SWG_holes]
