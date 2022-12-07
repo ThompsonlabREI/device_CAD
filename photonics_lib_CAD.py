@@ -75,24 +75,24 @@ if __name__ == "__main__":
                                                param['grating_first_index'] - param['grating_delta_index'] * x) ** 2 + 5.542 * param['a_2DPhC'] * (
                                                param['grating_first_index'] - param['grating_delta_index'] * x) - 1.931 * param['a_2DPhC'] for x in grating_x_num]
 
-    constgrating_airholescale = 1.01
-    SW_GC_cell = lib.new_cell("N_SW_GC")
-    [SW_GC,disregard] = subwavelength_grating(air_hole_diameter_list_base,
-        constgrating_airholescale,
-        param['grating_period_x_start'],
-        param['phaseFactor'],
-        param['grating_delta_index'],
-        param["resonance"],
-        param['num_grating_periods_x'],
-        param['num_grating_periods_y'],
-        param['n_circle_points_GC'],
-        param['a_2DPhC'],
-        param['grating_pad_length'],
-        param['grating_pad_width'],
-        param['grating_pad_buffer'],
-        0,
-        0,
-        SW_GC_cell)
+    # constgrating_airholescale = 1.01
+    # SW_GC_cell = lib.new_cell("N_SW_GC")
+    # [SW_GC,disregard] = subwavelength_grating(air_hole_diameter_list_base,
+    #     constgrating_airholescale,
+    #     param['grating_period_x_start'],
+    #     param['phaseFactor'],
+    #     param['grating_delta_index'],
+    #     param["resonance"],
+    #     param['num_grating_periods_x'],
+    #     param['num_grating_periods_y'],
+    #     param['n_circle_points_GC'],
+    #     param['a_2DPhC'],
+    #     param['grating_pad_length'],
+    #     param['grating_pad_width'],
+    #     param['grating_pad_buffer'],
+    #     0,
+    #     0,
+    #     SW_GC_cell)
 
 
     # def subwavelength_grating(
@@ -143,7 +143,7 @@ if __name__ == "__main__":
     )
 
     c.add(gdspy.CellArray(circle_array, len(ring_gaps), 1, (input_gap, 0), (0, 0)))
-    c.add(SW_GC)
+    # c.add(SW_GC)
 
     # Save to a gds file and check out the output
     lib.write_gds("photonics_1layersaved.gds",cells=[c])
@@ -151,7 +151,7 @@ if __name__ == "__main__":
     GC_scales = [0.97,1.01,1.05]
     grating_coupler_list = []
     for GC_scale in GC_scales:
-        [GC_holes,device_format_holes] = subwavelength_grating(air_hole_diameter_list_base,
+        device_format_holes = subwavelength_grating(air_hole_diameter_list_base,
         GC_scale,
         param['grating_period_x_start'],
         param['phaseFactor'],
@@ -165,25 +165,31 @@ if __name__ == "__main__":
         param['grating_pad_width'],
         param['grating_pad_buffer'],
         0,
-        0,
-        SW_GC_cell)
+        0)
         grating_coupler_list.append(device_format_holes)
-    grid_of_holes = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(3,1),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
-    D = pg.gridsweep(
-        function=pg.circle,
-        param_x={'radius': [10, 20, 30, 40, 50]},
-        param_y={'layer': [0, 5, 9]},
-        param_defaults={},
-        param_override={},
-        spacing=(30, 10),
-        separation=True,
-        align_x='x',
-        align_y='y',
-        edge_x='x',
-        edge_y='ymax',
-        label_layer=None)
-
-    # qp(D)
-    D.write_gds('phidlcheck.gds')
-    grid_of_holes.write_gds('gridsweepcheck.gds')
+    grid_of_holes = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
+    # grid_of_holes_2 = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
+    big_boy = Device()
+    grid1 = big_boy << grid_of_holes
+    grid2 = big_boy << grid_of_holes
+    bounding_box_grid1 = grid1.get_bounding_box()
+    grid2.move(origin=bounding_box_grid1[0],destination=bounding_box_grid1[1])
+    # D = pg.gridsweep(
+    #     function=pg.circle,
+    #     param_x={'radius': [10, 20, 30, 40, 50]},
+    #     param_y={'layer': [0, 5, 9]},
+    #     param_defaults={},
+    #     param_override={},
+    #     spacing=(30, 10),
+    #     separation=True,
+    #     align_x='x',
+    #     align_y='y',
+    #     edge_x='x',
+    #     edge_y='ymax',
+    #     label_layer=None)
+    #
+    # # qp(D)
+    # D.write_gds('phidlcheck.gds')
+    grid_of_holes.write_gds('gridsweepcheck.gds',unit=1e-9,precision=1e-12)
+    big_boy.write_gds('checking_deviceofdevice.gds',unit=1e-9,precision=1e-12)
     # gdspy.LayoutViewer(lib)
