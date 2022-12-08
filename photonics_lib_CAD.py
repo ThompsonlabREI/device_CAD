@@ -77,7 +77,10 @@ if __name__ == "__main__":
     num_mirror_holes_middle = 2
     num_mirror_holes_end = 11
 
-    [PhC_beam_hole_set,aper_list] = generate_PhC_holes(PhCparams, num_cavity_holes,num_mirror_holes_middle,num_mirror_holes_end)
+    phc_scale_min = 0.87815
+    phc_scale_max = 1.0036
+
+    [PhC_beam_hole_set,aper_list] = generate_PhC_holes(PhCparams,phc_scale_min,phc_scale_max, num_cavity_holes,num_mirror_holes_middle,num_mirror_holes_end)
     print(aper_list)
     # grid_of_holes_2 = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
     # big_boy = Device()
@@ -107,6 +110,6 @@ if __name__ == "__main__":
     #
     # # qp(D)
     # D.write_gds('phidlcheck.gds')
-    # grid_of_holes.write_gds('gridsweepcheck.gds',unit=1e-9,precision=1e-12)
+    PhC_beam_hole_set.write_gds('phcbeamholes.gds',unit=1e-9,precision=1e-12)
     grid_of_GCs.write_gds('checking_deviceofdevice.gds',unit=1e-9,precision=1e-12)
     # gdspy.LayoutViewer(lib)
