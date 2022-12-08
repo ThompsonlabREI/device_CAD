@@ -76,12 +76,24 @@ if __name__ == "__main__":
     num_cavity_holes = 12
     num_mirror_holes_middle = 2
     num_mirror_holes_end = 11
+    PhCparams['bus_wg_width']=392
+    PhCparams['PhC_wy']=600
+    PhCparams['bus_wg_to_phc_wg_spacing']=500
+    PhCparams['outer_cutout_phc_wg']=1500
 
     phc_scale_min = 0.87815
     phc_scale_max = 1.0036
 
     [PhC_beam_hole_set,aper_list] = generate_PhC_holes(PhCparams,phc_scale_min,phc_scale_max, num_cavity_holes,num_mirror_holes_middle,num_mirror_holes_end)
     print(aper_list)
+
+    #beam hole set will give length of top and bottom beams (adjust later for mirror at the end)
+    PhC_beam_len = PhC_beam_hole_set.xmax-PhC_beam_hole_set.xmin
+    PhC_beam_skeleton = generate_PhC_skeleton(PhCparams,PhC_beam_len)
+    PhC_holes_and_skeleton = Device()
+    PhC_holes_and_skeleton.add_ref(PhC_beam_skeleton)
+    PhC_holes_and_skeleton.add_ref(PhC_beam_hole_set)
+
     # grid_of_holes_2 = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
     # big_boy = Device()
     # grid1 = big_boy << grid_of_holes
@@ -110,6 +122,6 @@ if __name__ == "__main__":
     #
     # # qp(D)
     # D.write_gds('phidlcheck.gds')
-    PhC_beam_hole_set.write_gds('phcbeamholes.gds',unit=1e-9,precision=1e-12)
+    PhC_holes_and_skeleton.write_gds('phcbeamholes.gds',unit=1e-9,precision=1e-12)
     grid_of_GCs.write_gds('checking_deviceofdevice.gds',unit=1e-9,precision=1e-12)
     # gdspy.LayoutViewer(lib)
