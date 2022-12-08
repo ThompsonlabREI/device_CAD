@@ -80,19 +80,26 @@ if __name__ == "__main__":
     PhCparams['PhC_wy']=600
     PhCparams['bus_wg_to_phc_wg_spacing']=500
     PhCparams['outer_cutout_phc_wg']=1500
+    PhCparams['num_bus_reflector_mirrors'] = 6
+    PhCparams['bus_reflector_taper_len']=2000
+    PhCparams['beam_tether_x'] = 500
+    PhCparams['bus_taper_xlen'] = 500
+    PhCparams['bus_taper_chonky_y'] = 1000
+    PhCparams['bus_reflect_taper_len_x'] = PhCparams['bus_reflector_taper_len']
 
     phc_scale_min = 0.87815
     phc_scale_max = 1.0036
 
-    [PhC_beam_hole_set,aper_list] = generate_PhC_holes(PhCparams,phc_scale_min,phc_scale_max, num_cavity_holes,num_mirror_holes_middle,num_mirror_holes_end)
+    [ellipse_holes_top_beam,ellipse_holes_bottom_beam,aper_list] = generate_PhC_holes(PhCparams,phc_scale_min,phc_scale_max, num_cavity_holes,num_mirror_holes_middle,num_mirror_holes_end)
     print(aper_list)
 
     #beam hole set will give length of top and bottom beams (adjust later for mirror at the end)
-    PhC_beam_len = PhC_beam_hole_set.xmax-PhC_beam_hole_set.xmin
+    PhC_beam_len = ellipse_holes_top_beam.xmax-ellipse_holes_top_beam.xmin
     PhC_beam_skeleton = generate_PhC_skeleton(PhCparams,PhC_beam_len)
     PhC_holes_and_skeleton = Device()
     PhC_holes_and_skeleton.add_ref(PhC_beam_skeleton)
-    PhC_holes_and_skeleton.add_ref(PhC_beam_hole_set)
+    PhC_holes_and_skeleton.add_ref(ellipse_holes_top_beam)
+    PhC_holes_and_skeleton.add_ref(ellipse_holes_bottom_beam).mirror(p1=(PhC_beam_skeleton.xmin,PhC_beam_skeleton.y),p2=(PhC_beam_skeleton.xmax,PhC_beam_skeleton.y))
 
     # grid_of_holes_2 = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
     # big_boy = Device()

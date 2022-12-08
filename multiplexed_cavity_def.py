@@ -111,14 +111,18 @@ def generate_PhC_holes(
 
     print('top_beam_ellipse_dims' + str(top_beam_ellipse_dims_x))
     print('bottom beam ellipse dims x' + str(bot_beam_ellipse_dims_x))
-    return [phc_beams,aper_list]
+    return [ellipse_holes_top_beam,ellipse_holes_bottom_beam,aper_list]
 
 def generate_PhC_skeleton(
     PhCparams,
     beam_len_x
 ):
     phc_skeleton_layer = 6
+    phc_skeleton_subtractions_layer = 8
     phc_skeleton_silicon = Device()
+
+    #calculate additional length needed
+
     beam_path = pp.straight(length=beam_len_x)
     # P2 = pp.straight(length=test_PhC_bus_len)
     phc_beam_ref = beam_path.extrude(PhCparams['PhC_wy'],layer=phc_skeleton_layer)
@@ -132,4 +136,42 @@ def generate_PhC_skeleton(
     phc_bot_beam.ymax = phc_bus_wg.ymin - PhCparams['bus_wg_to_phc_wg_spacing']
     # pad_ref = P1.extrude(GCparams['grating_pad_width'], layer=2)
     # PhC_WG_ref = P2.extrude(GCparams['PhC_wy'], layer=2)
-    return phc_skeleton_silicon
+
+    #define y tether
+    ytether_path = pp.straight(length=PhCparams['beam_tether_x'])
+    ytether_len = phc_skeleton_silicon.ysize+2*PhCparams['outer_cutout_phc_wg']
+    ytether = ytether_path.extrude(ytether_len,layer=phc_skeleton_subtractions_layer)
+    ytether.center = phc_skeleton_silicon.center
+
+    #define x taper
+    phc_skeleton_silicon_tethered_layer = 9
+
+    bus_center_taper_path = pp.straight(length=PhCparams['bus_reflector_taper_len'])
+    bus_left_taper = bus_center_taper_path.extrude([PhCparams['bus_wg_width'],PhCparams['bus_taper_chonky_y']],layer=phc_skeleton_silicon_tethered_layer)
+    bus_left_taper.y = ytether.y
+    bus_left_taper.xmax = ytether.xmin
+
+    bus_right_taper = pg.copy(bus_left_taper)
+    bus_right_taper.rotate(180)
+    bus_right_taper.xmin = ytether.xmax
+    bus_right_taper.y=ytether.y
+
+    #subtract y tether and x taper from 3 beams
+    phc_skeleton_silicon_tethered = pg.boolean(A=phc_skeleton_silicon,B=ytether,operation='or',precision=1e-9,num_divisions=[1,1],layer=phc_skeleton_silicon_tethered_layer)
+    phc_skeleton_silicon_tethered.write_gds('phcbones_tethered.gds', unit=1e-9, precision=1e-12)
+    # phc_skeleton_silicon_tethered.add_ref(bus_left_taper)
+    # phc_skeleton_silicon_tethered.add_ref(bus_right_taper)
+    phc_skeleton_silicon_tether_tapered_layer = 10
+    phc_skeleton_silicon_tether_tapered = pg.boolean(A=phc_skeleton_silicon_tethered,B=[bus_left_taper,bus_right_taper],operation='or',precision=1e-9,num_divisions=[1,1],layer=phc_skeleton_silicon_tether_tapered_layer)
+
+    phc_skeleton_silicon_tether_tapered.write_gds('phcbones.gds', unit=1e-9, precision=1e-12)
+
+    #define outer layer for cutout
+    outer_layer_rect_ref = pg.rectangle(size=(phc_skeleton_silicon_tether_tapered.xsize,ytether_len),layer=7)
+    phc_outer_box = Device()
+    out_layer_rect = phc_outer_box << outer_layer_rect_ref
+    out_layer_rect.y = phc_skeleton_silicon_tether_tapered.y
+
+    phc_cutout_only = pg.boolean(A=phc_outer_box,B=phc_skeleton_silicon_tether_tapered,operation='not',precision=1e-9,num_divisions=[1,1],layer=0)
+
+    return phc_cutout_only
