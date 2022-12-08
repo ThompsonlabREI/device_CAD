@@ -14,6 +14,7 @@ from grating_def import *
 from GC_def import *
 import phidl.geometry as pg
 from phidl import quickplot as qp
+from multiplexed_cavity_def import *
 
 if __name__ == "__main__":
     lib = gdspy.GdsLibrary(unit=1e-09)
@@ -64,6 +65,20 @@ if __name__ == "__main__":
     # grid_of_silicon = pg.grid(silicon_skeleton_list, spacing=(xspacing,yspacing),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
     grid_of_GCs = pg.grid(grating_coupler_list,spacing=(xspacing,yspacing),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
 
+    #create PhC part of cavity
+    PhCparams = {}
+    PhCparams['num_PhC_per_wg'] = 2
+    PhCparams['num_PhC_per_GC'] = 2*PhCparams['num_PhC_per_wg']
+    PhCparams['PhC_hx'] = 236.8
+    PhCparams['PhC_hy'] = 407.03
+    PhCparams['aper_cav'] = 349.1  # 298
+    PhCparams['aper_mir'] = 435.2  # 343
+    num_cavity_holes = 12
+    num_mirror_holes_middle = 2
+    num_mirror_holes_end = 11
+
+    [PhC_beam_hole_set,aper_list] = generate_PhC_holes(PhCparams, num_cavity_holes,num_mirror_holes_middle,num_mirror_holes_end)
+    print(aper_list)
     # grid_of_holes_2 = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
     # big_boy = Device()
     # grid1 = big_boy << grid_of_holes
