@@ -101,34 +101,19 @@ if __name__ == "__main__":
     PhC_holes_and_skeleton.add_ref(ellipse_holes_top_beam)
     PhC_holes_and_skeleton.add_ref(ellipse_holes_bottom_beam).mirror(p1=(PhC_beam_skeleton.xmin,PhC_beam_skeleton.y),p2=(PhC_beam_skeleton.xmax,PhC_beam_skeleton.y))
 
-    # grid_of_holes_2 = pg.grid(grating_coupler_list, spacing=(5,1),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
-    # big_boy = Device()
-    # grid1 = big_boy << grid_of_holes
-    # grid2 = big_boy << grid_of_holes
-    # silicon_structure1 = big_boy << grid_of_silicon
-    # silicon_structure2 = big_boy << grid_of_silicon
-    # bounding_box_grid1 = grid1.get_bounding_box()
-    # silicon_structure_box_grid1 = silicon_structure1.get_bounding_box()
-    # grid2.move(origin=bounding_box_grid1[0],destination=bounding_box_grid1[1])
-    # silicon_structure2.move(origin=silicon_structure_box_grid1[0],destination=silicon_structure_box_grid1[1])
+    #combine a single GC and PhC
+    single_device = Device()
+    GC_scale_single_check = 0.97
+    grating_coupler_single = subwavelength_grating(air_hole_diameter_list_base, GC_scale_single_check, GCparams, grating_pad_center,
+                                            GC_hole_layer, num_tether_along_taper, GC_tether_x)
 
-    # big_boy.remap_layers({0:1})
-    # D = pg.gridsweep(
-    #     function=pg.circle,
-    #     param_x={'radius': [10, 20, 30, 40, 50]},
-    #     param_y={'layer': [0, 5, 9]},
-    #     param_defaults={},
-    #     param_override={},
-    #     spacing=(30, 10),
-    #     separation=True,
-    #     align_x='x',
-    #     align_y='y',
-    #     edge_x='x',
-    #     edge_y='ymax',
-    #     label_layer=None)
-    #
-    # # qp(D)
-    # D.write_gds('phidlcheck.gds')
+    single_device.add_ref(grating_coupler_single)
+    single_device_phc_half = single_device << PhC_holes_and_skeleton
+    single_device_phc_half.xmin=grating_coupler_single.xmax
+    single_device_phc_half.y=grating_coupler_single.y
+
+    #get holes and GC together
+
     PhC_holes_and_skeleton.write_gds('phcbeamholes.gds',unit=1e-9,precision=1e-12)
-    grid_of_GCs.write_gds('checking_deviceofdevice.gds',unit=1e-9,precision=1e-12)
+    single_device.write_gds('checking combined device.gds',unit=1e-9,precision=1e-12)
     # gdspy.LayoutViewer(lib)
