@@ -57,12 +57,12 @@ def generate_silicon_skeleton(
     P1 = pp.straight(length=GCparams['grating_pad_length'])
     P2 = pp.straight(length=test_PhC_bus_len)
     pad_ref = P1.extrude(GCparams['grating_pad_width'], layer=2)
-    PhC_WG_ref = P2.extrude(GCparams['PhC_wy'], layer=2)
+    PhC_WG_ref = P2.extrude(GCparams['bus_wg_width'], layer=2)
 
     # define the taper
     P3 = pp.straight(length=GCparams['taper_length'])
     # Use the transitional CrossSection to create a Device
-    WG_trans = P3.extrude([GCparams['grating_pad_width'], GCparams['PhC_wy']], layer=2)
+    WG_trans = P3.extrude([GCparams['grating_pad_width'], GCparams['bus_wg_width']], layer=2)
 
     # add them all to a device together
     silicon_skeleton = Device()
@@ -80,12 +80,12 @@ def generate_silicon_skeleton(
     # pad_and_taper.add_ref(WG_trans).movex(GCparams['grating_pad_length'])
     pad_and_taper.add_ref(pad_ref)
     # outline = pg.outline(pad_and_taper,distance=1000,precision=1e-9,max_points=8000,layer=silicon_skeleton_cutout_layer)
-    inversion = pg.invert(pad_and_taper, border=1000, precision=1e-9, layer=silicon_skeleton_cutout_layer)
+    inversion = pg.invert(pad_and_taper, border=GCparams['cutout_around_GC_taper'], precision=1e-9, layer=silicon_skeleton_cutout_layer)
     skeleton_and_outline = Device()
     skeleton_and_outline.add_ref(inversion)
     skeleton_and_outline.add_ref(pad_and_taper)
 
-    outline_taper = pg.outline(wg3,distance=1000,precision=1e-9,layer=3)
+    outline_taper = pg.outline(wg3,distance=GCparams['cutout_around_GC_taper'],precision=1e-9,layer=3)
     skeleton_and_outline.add_ref(outline_taper)
     silicon_cutout_only = pg.boolean(A=outline_taper,B=pad_and_taper,operation='not',precision=1e-9,num_divisions=[1,1],layer=4)
     # skeleton_and_outline.add_ref(silicon_cutout_only)
@@ -123,17 +123,33 @@ def subwavelength_grating(
     grating_pad_center,
     GC_hole_layer)
 
-    [silicon_stuff,pad_center] = generate_silicon_skeleton(GCparams,num_tether_along_taper,GC_tether_x_nm)
+    [silicon_stuff_all_layers,pad_center] = generate_silicon_skeleton(GCparams,num_tether_along_taper,GC_tether_x_nm)
 
     #align the silicon skeleton and holes
     grating_holes.center=pad_center
+    # grating_holes.rotate(180)
+    grating_holes.mirror(p1=(grating_holes.x,grating_holes.ymin),p2=(grating_holes.x,grating_holes.ymax))
     # silicon_stuff.y = grating_holes.y
 
     #subtract the outline to get just the silicon remaining
     grating_coupler=Device()
+    silicon_stuff = pg.extract(silicon_stuff_all_layers,layers=[0])
+    # silicon_stuff.remove_layers()
     grating_coupler.add_ref(grating_holes)
     grating_coupler.add_ref(silicon_stuff)
     # grating_coupler.add_ref(skeleton_outline)
+
+    #generate the taper to connect both
+
+    GC_cutout_taper_path = pp.straight(length=GCparams['cutout_taper_length'])
+    connector_taper_y_start = GCparams['bus_wg_width'] + 2*GCparams['cutout_around_GC_taper']
+    connector_taper_y_end = GCparams['bus_wg_width'] + 2 * GCparams['bus_wg_to_phc_wg_spacing']
+    gc_to_bus_taper_outline_ref = GC_cutout_taper_path.extrude([connector_taper_y_start, connector_taper_y_end], layer=10)
+    bus_wg_connector_ref = GC_cutout_taper_path.extrude(GCparams['bus_wg_width'],layer=10)
+    gc_to_bus_taper_cutout_ref = pg.boolean(A=gc_to_bus_taper_outline_ref,B=bus_wg_connector_ref,operation='not',precision=1e-9,num_divisions=[1,1],layer=0)
+    gc_to_bus_taper_cutout = grating_coupler << gc_to_bus_taper_cutout_ref
+    gc_to_bus_taper_cutout.y=silicon_stuff.y
+    gc_to_bus_taper_cutout.xmin=silicon_stuff.xmax
 
     return grating_coupler
 

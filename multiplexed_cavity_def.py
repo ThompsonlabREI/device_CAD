@@ -196,7 +196,7 @@ def generate_PhC_skeleton(
     phc_reflector_taper = reflector_skeleton << reflector_taper_ref
     phc_reflector_taper.xmax=phc_reflector_beam.xmin
     # reflector_skeleton.write_gds('bus_reflector_skeleton.gds', unit=1e-9, precision=1e-12)
-    reflector_outer_rect_ref = pg.rectangle(size=(reflector_skeleton.xsize,PhCparams['bus_wg_width']+PhCparams['bus_wg_to_phc_wg_spacing']),layer=7)
+    reflector_outer_rect_ref = pg.rectangle(size=(reflector_skeleton.xsize,PhCparams['bus_wg_width']+2*PhCparams['bus_wg_to_phc_wg_spacing']),layer=7)
     reflector_outer_rect_ref.center = reflector_skeleton.center
     reflector_cutout = pg.boolean(A=reflector_outer_rect_ref,B=reflector_skeleton,operation='not',precision=1e-9,num_divisions=[1,1],layer=0)
     reflector_cutout.write_gds('bus_reflector_skeleton_cutout.gds', unit=1e-9, precision=1e-12)

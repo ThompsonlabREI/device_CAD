@@ -17,7 +17,7 @@ def generate_photonics_params():
     PhCparams['PhC_wy'] = 600
     PhCparams['bus_wg_to_phc_wg_spacing'] = 500
     PhCparams['outer_cutout_phc_wg'] = 1500
-    PhCparams['num_bus_reflector_mirrors'] = 6
+    PhCparams['num_bus_reflector_mirrors'] = 10
     PhCparams['bus_reflector_taper_len'] = 2000
     PhCparams['beam_tether_x'] = 500
     PhCparams['bus_taper_xlen'] = 500
@@ -26,6 +26,7 @@ def generate_photonics_params():
     PhCparams['num_cavity_holes']=12
     PhCparams['num_mirror_holes_middle'] = 2
     PhCparams['num_mirror_holes_end'] = 11
+    PhCparams['phc_beam_buffer_x'] = 2*PhCparams['beam_tether_x']
 
     GCparams = {}
     GCparams['a_2DPhC'] = 232.61  # looks like this is the same as the
@@ -47,5 +48,9 @@ def generate_photonics_params():
     GCparams['n_circle_points_GC'] = 110
     GCparams['PhC_wy'] = 600
     GCparams['taper_length'] = 185000
+    GCparams['cutout_taper_length'] = 2000
+    GCparams['bus_wg_width']=PhCparams['bus_wg_width']
+    GCparams['cutout_around_GC_taper'] = 1000
+    GCparams['bus_wg_to_phc_wg_spacing']=PhCparams['bus_wg_to_phc_wg_spacing']
 
     return [PhCparams,GCparams]

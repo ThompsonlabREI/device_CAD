@@ -18,23 +18,35 @@ from multiplexed_cavity_def import *
 from define_params import *
 
 def generate_single_device(GC_scale,phc_scale_min,phc_scale_max):
-    [ellipse_holes_top_beam,ellipse_holes_bottom_beam,aper_list,reflector_hole_set] = generate_PhC_holes(PhCparams,phc_scale_min,phc_scale_max)
+    [ellipse_holes_top_beam_ref,ellipse_holes_bottom_beam_ref,aper_list,reflector_hole_set_ref] = generate_PhC_holes(PhCparams,phc_scale_min,phc_scale_max)
     print(aper_list)
     # reflector_hole_set.write_gds('reflector_hole_set.gds',unit=1e-9,precision=1e-12)
     # reflector_hole_set = generate_single_beam_set(aper_list,beam_ellipse_dims_x,beam_ellipse_dims_y,hole_center_x)
     #beam hole set will give length of top and bottom beams (adjust later for mirror at the end)
 
-    reflector_len_x = reflector_hole_set.xmax-reflector_hole_set.xmin
-    PhC_beam_len = ellipse_holes_top_beam.xmax-ellipse_holes_top_beam.xmin
-    [PhC_beam_skeleton,reflector_skeleton_ref] = generate_PhC_skeleton(PhCparams,PhC_beam_len,reflector_len_x)
+    reflector_len_x = reflector_hole_set_ref.xmax-reflector_hole_set_ref.xmin
+    PhC_beam_len = ellipse_holes_top_beam_ref.xmax-ellipse_holes_top_beam_ref.xmin + PhCparams['phc_beam_buffer_x']
+    # PhC_beam_len += PhCparams['phc_beam_buffer_x']
+    [PhC_beam_skeleton_ref,reflector_skeleton_ref] = generate_PhC_skeleton(PhCparams,PhC_beam_len,reflector_len_x)
     PhC_holes_and_skeleton = Device()
-    PhC_holes_and_skeleton.add_ref(PhC_beam_skeleton)
-    PhC_holes_and_skeleton.add_ref(ellipse_holes_top_beam)
+
+    PhC_beam_skeleton = PhC_holes_and_skeleton << PhC_beam_skeleton_ref
+    # PhC_holes_and_skeleton.add_ref(PhC_beam_skeleton)
+    ellipse_holes_top_beam = PhC_holes_and_skeleton << ellipse_holes_top_beam_ref
+    ellipse_holes_top_beam.x = PhC_beam_skeleton.x
+    # PhC_holes_and_skeleton.add_ref(ellipse_holes_top_beam)
+
     reflector_skeleton = PhC_holes_and_skeleton << reflector_skeleton_ref
     reflector_skeleton.xmin = PhC_beam_skeleton.xmax
     reflector_skeleton.y=PhC_beam_skeleton.y
+    reflector_hole_set = PhC_holes_and_skeleton << reflector_hole_set_ref
+    reflector_hole_set.y=reflector_skeleton.y
+    reflector_hole_set.xmax=reflector_skeleton.xmax
 
-    PhC_holes_and_skeleton.add_ref(ellipse_holes_bottom_beam).mirror(p1=(PhC_beam_skeleton.xmin,PhC_beam_skeleton.y),p2=(PhC_beam_skeleton.xmax,PhC_beam_skeleton.y))
+    ellipse_holes_bottom_beam = PhC_holes_and_skeleton << ellipse_holes_bottom_beam_ref
+    ellipse_holes_bottom_beam.mirror(p1=(PhC_beam_skeleton.xmin,PhC_beam_skeleton.y),p2=(PhC_beam_skeleton.xmax,PhC_beam_skeleton.y))
+    # PhC_holes_and_skeleton.add_ref(ellipse_holes_bottom_beam_ref).mirror(p1=(PhC_beam_skeleton.xmin,PhC_beam_skeleton.y),p2=(PhC_beam_skeleton.xmax,PhC_beam_skeleton.y))
+    ellipse_holes_bottom_beam.x = PhC_beam_skeleton.x
 
     #combine a single GC and PhC
     single_device = Device()
@@ -64,8 +76,8 @@ if __name__ == "__main__":
     GC_scale_max = 1.05
     GC_scales = numpy.linspace(GC_scale_min,GC_scale_max,num=num_GC_scalings)
 
-    xspacing = 135000
-    yspacing = 250000
+    xspacing = 50000
+    yspacing = 50000
 
     # GC_scales = [0.97,1.01,1.05]
     # grating_coupler_list = []
