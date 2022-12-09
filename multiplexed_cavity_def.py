@@ -78,18 +78,15 @@ def generate_single_beam_set(aper_list,beam_ellipse_dims_x,beam_ellipse_dims_y,h
 def generate_PhC_holes(
     PhCparams,
     this_PhC_set_scale_min,
-    this_PhC_set_scale_max,
-    num_cavity_holes,
-    num_mirror_holes_middle,
-    num_mirror_holes_end
+    this_PhC_set_scale_max
 ):
     scale_list_phc = numpy.linspace(this_PhC_set_scale_min, this_PhC_set_scale_max, PhCparams['num_PhC_per_GC'])  # param2['num_phc'] #SRP: this is where PhC scale list gets defined by sweeping over n total cavities - n/2 on the bottom waveguide and n/2 on the top waveguide
     bottom_and_top_sets = numpy.split(scale_list_phc,2)
     top_beam_scaling_phc = bottom_and_top_sets[0]
     bottom_beam_scaling_phc = bottom_and_top_sets[1]
     #get aper_list and ellipse scalings for the top beam
-    [aper_list,top_beam_ellipse_dims_x,top_beam_ellipse_dims_y] = generate_aper_list(num_cavity_holes,num_mirror_holes_middle,num_mirror_holes_end,PhCparams['aper_mir'],PhCparams['aper_cav'],PhCparams['num_PhC_per_wg'],top_beam_scaling_phc,PhCparams['PhC_hx'],PhCparams['PhC_hy'])
-    [aper_list_bot,bot_beam_ellipse_dims_x,bot_beam_ellipse_dims_y] = generate_aper_list(num_cavity_holes,num_mirror_holes_middle,num_mirror_holes_end,PhCparams['aper_mir'],PhCparams['aper_cav'],PhCparams['num_PhC_per_wg'],bottom_beam_scaling_phc,PhCparams['PhC_hx'],PhCparams['PhC_hy'])
+    [aper_list,top_beam_ellipse_dims_x,top_beam_ellipse_dims_y] = generate_aper_list(PhCparams['num_cavity_holes'],PhCparams['num_mirror_holes_middle'],PhCparams['num_mirror_holes_end'] ,PhCparams['aper_mir'],PhCparams['aper_cav'],PhCparams['num_PhC_per_wg'],top_beam_scaling_phc,PhCparams['PhC_hx'],PhCparams['PhC_hy'])
+    [aper_list_bot,bot_beam_ellipse_dims_x,bot_beam_ellipse_dims_y] = generate_aper_list(PhCparams['num_cavity_holes'],PhCparams['num_mirror_holes_middle'],PhCparams['num_mirror_holes_end'] ,PhCparams['aper_mir'],PhCparams['aper_cav'],PhCparams['num_PhC_per_wg'],bottom_beam_scaling_phc,PhCparams['PhC_hx'],PhCparams['PhC_hy'])
     # top_beam_ellipse_dims = generate_ellipse_dims(num_cavity_holes,num_mirror_holes_middle,num_mirror_holes_end,top_beam_scaling_phc)
 
     hole_center_y_new = 0
