@@ -105,14 +105,26 @@ def generate_PhC_holes(
 
     phc_beams_group = Group([ellipse_holes_top_beam,ellipse_holes_bottom_beam])
     # phc_beams.write_gds('twobeams.gds', unit=1e-9, precision=1e-12)
+    aper_list_reflector = numpy.ones(PhCparams['num_bus_reflector_mirrors'])*PhCparams['aper_mir']
+
+
+    beam_ellipse_x_avg = numpy.average([numpy.average(top_beam_ellipse_dims_x),numpy.average(bot_beam_ellipse_dims_x)])
+    print("beam ellipse avg" +str(beam_ellipse_x_avg))
+    beam_ellipse_y_avg = numpy.average([numpy.average(top_beam_ellipse_dims_y),numpy.average(bot_beam_ellipse_dims_y)])
+    print("beam ellipse avg" +str(beam_ellipse_y_avg))
+    reflector_ellipse_dims_x = numpy.ones(PhCparams['num_bus_reflector_mirrors'])*beam_ellipse_x_avg
+    reflector_ellipse_dims_y = numpy.ones(PhCparams['num_bus_reflector_mirrors']) * beam_ellipse_y_avg
+    reflector_set = generate_single_beam_set(aper_list_reflector,reflector_ellipse_dims_x,reflector_ellipse_dims_y,hole_center_x)
 
     print('top_beam_ellipse_dims' + str(top_beam_ellipse_dims_x))
     print('bottom beam ellipse dims x' + str(bot_beam_ellipse_dims_x))
-    return [ellipse_holes_top_beam,ellipse_holes_bottom_beam,aper_list]
+
+    return [ellipse_holes_top_beam,ellipse_holes_bottom_beam,aper_list,reflector_set]
 
 def generate_PhC_skeleton(
     PhCparams,
-    beam_len_x
+    beam_len_x,
+    reflector_len_x
 ):
     phc_skeleton_layer = 6
     phc_skeleton_subtractions_layer = 8
@@ -171,4 +183,21 @@ def generate_PhC_skeleton(
 
     phc_cutout_only = pg.boolean(A=phc_outer_box,B=phc_skeleton_silicon_tether_tapered,operation='not',precision=1e-9,num_divisions=[1,1],layer=0)
 
-    return phc_cutout_only
+    #generate reflector skeleton
+    #taper part
+    #reflector beam
+    reflector_beam_path = pp.straight(length=reflector_len_x)
+    reflector_taper_path = pp.straight(length=PhCparams['bus_reflect_taper_len_x'])
+    reflector_beam_ref = reflector_beam_path.extrude(PhCparams['PhC_wy'],layer=phc_skeleton_layer)
+    reflector_taper_ref = reflector_taper_path.extrude([PhCparams['bus_wg_width'],PhCparams['PhC_wy']],layer=phc_skeleton_layer)
+
+    reflector_skeleton = Device()
+    phc_reflector_beam = reflector_skeleton << reflector_beam_ref
+    phc_reflector_taper = reflector_skeleton << reflector_taper_ref
+    phc_reflector_taper.xmax=phc_reflector_beam.xmin
+    # reflector_skeleton.write_gds('bus_reflector_skeleton.gds', unit=1e-9, precision=1e-12)
+    reflector_outer_rect_ref = pg.rectangle(size=(reflector_skeleton.xsize,PhCparams['bus_wg_width']+PhCparams['bus_wg_to_phc_wg_spacing']),layer=7)
+    reflector_outer_rect_ref.center = reflector_skeleton.center
+    reflector_cutout = pg.boolean(A=reflector_outer_rect_ref,B=reflector_skeleton,operation='not',precision=1e-9,num_divisions=[1,1],layer=0)
+    reflector_cutout.write_gds('bus_reflector_skeleton_cutout.gds', unit=1e-9, precision=1e-12)
+    return [phc_cutout_only,reflector_cutout]

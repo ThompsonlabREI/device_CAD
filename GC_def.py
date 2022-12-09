@@ -94,7 +94,7 @@ def generate_silicon_skeleton(
     #get the outline itself that should remain
     tether_spacing = GCparams['taper_length']/(1+num_tether_along_taper)
     tethers_collection = Device()
-    for tether_index in range(1,num_tether_along_taper+1):
+    for tether_index in range(1,num_tether_along_taper+2):
         #calculate tether x
         tetherx = tether_index*tether_spacing
         tether_path = pp.straight(length=GC_tether_x_nm)

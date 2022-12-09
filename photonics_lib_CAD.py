@@ -18,15 +18,22 @@ from multiplexed_cavity_def import *
 from define_params import *
 
 def generate_single_device(GC_scale,phc_scale_min,phc_scale_max):
-    [ellipse_holes_top_beam,ellipse_holes_bottom_beam,aper_list] = generate_PhC_holes(PhCparams,phc_scale_min,phc_scale_max)
+    [ellipse_holes_top_beam,ellipse_holes_bottom_beam,aper_list,reflector_hole_set] = generate_PhC_holes(PhCparams,phc_scale_min,phc_scale_max)
     print(aper_list)
-
+    # reflector_hole_set.write_gds('reflector_hole_set.gds',unit=1e-9,precision=1e-12)
+    # reflector_hole_set = generate_single_beam_set(aper_list,beam_ellipse_dims_x,beam_ellipse_dims_y,hole_center_x)
     #beam hole set will give length of top and bottom beams (adjust later for mirror at the end)
+
+    reflector_len_x = reflector_hole_set.xmax-reflector_hole_set.xmin
     PhC_beam_len = ellipse_holes_top_beam.xmax-ellipse_holes_top_beam.xmin
-    PhC_beam_skeleton = generate_PhC_skeleton(PhCparams,PhC_beam_len)
+    [PhC_beam_skeleton,reflector_skeleton_ref] = generate_PhC_skeleton(PhCparams,PhC_beam_len,reflector_len_x)
     PhC_holes_and_skeleton = Device()
     PhC_holes_and_skeleton.add_ref(PhC_beam_skeleton)
     PhC_holes_and_skeleton.add_ref(ellipse_holes_top_beam)
+    reflector_skeleton = PhC_holes_and_skeleton << reflector_skeleton_ref
+    reflector_skeleton.xmin = PhC_beam_skeleton.xmax
+    reflector_skeleton.y=PhC_beam_skeleton.y
+
     PhC_holes_and_skeleton.add_ref(ellipse_holes_bottom_beam).mirror(p1=(PhC_beam_skeleton.xmin,PhC_beam_skeleton.y),p2=(PhC_beam_skeleton.xmax,PhC_beam_skeleton.y))
 
     #combine a single GC and PhC
@@ -52,7 +59,7 @@ if __name__ == "__main__":
                                            GCparams['grating_first_index'] - GCparams['grating_delta_index'] * x) - 1.931 * GCparams['a_2DPhC'] for x in grating_x_num]
 
     #relevant params for sweep
-    num_GC_scalings = 5
+    num_GC_scalings = 2
     GC_scale_min = 0.95
     GC_scale_max = 1.05
     GC_scales = numpy.linspace(GC_scale_min,GC_scale_max,num=num_GC_scalings)
@@ -83,7 +90,7 @@ if __name__ == "__main__":
     phc_scale_min = 0.87815
     phc_scale_max = 1.0036
 
-    num_PhC_sweep = 5
+    num_PhC_sweep = 2
     phc_scale_min = 0.8
     phc_scale_max = 1.1
     #overlap
