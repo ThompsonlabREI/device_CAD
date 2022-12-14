@@ -94,12 +94,16 @@ def generate_silicon_skeleton(
     #get the outline itself that should remain
     tether_spacing = GCparams['taper_length']/(1+num_tether_along_taper)
     tethers_collection = Device()
-    for tether_index in range(1,num_tether_along_taper+2):
+    # pad_start_x = GCparams['grating_pad_length']
+    for tether_index in range(0,num_tether_along_taper+2):
         #calculate tether x
-        tetherx = tether_index*tether_spacing
         tether_path = pp.straight(length=GC_tether_x_nm)
         tether_ref = tether_path.extrude(silicon_cutout_only.ysize,layer=2)
-        tether_ref.movex(tetherx+GCparams['grating_pad_length'])
+        if tether_index == 0:
+            tether_ref.xmin = silicon_cutout_only.xmin
+        else:
+            tetherx = tether_index * tether_spacing
+            tether_ref.movex(tetherx+GCparams['grating_pad_length'])
         tethers_collection.add_ref(tether_ref)
         # tether_ref.move(origin=[taper_wg.xmin,pad_ref.y],destination=[taper_wg.xmin+tetherx,pad_ref.y])
         # tether_ref.movex(tetherx)
@@ -124,6 +128,7 @@ def subwavelength_grating(
     GC_hole_layer)
 
     [silicon_stuff_all_layers,pad_center] = generate_silicon_skeleton(GCparams,num_tether_along_taper,GC_tether_x_nm)
+    # silicon_stuff_all_layers.write_gds('checking_cutout_gc.gds',unit=1e-9,precision=1e-12)
 
     #align the silicon skeleton and holes
     grating_holes.center=pad_center
@@ -150,6 +155,19 @@ def subwavelength_grating(
     gc_to_bus_taper_cutout = grating_coupler << gc_to_bus_taper_cutout_ref
     gc_to_bus_taper_cutout.y=silicon_stuff.y
     gc_to_bus_taper_cutout.xmin=silicon_stuff.xmax
+
+    grating_coupler.write_gds('grating_coupler_check.gds', unit=1e-9, precision=1e-12)
+
+    #define and add holes air cutout
+    GC_pad_side_cutout_path = pp.straight(length=grating_holes.xsize)
+    GC_pad_side_cutout_ref = GC_pad_side_cutout_path.extrude(GCparams['grating_pad_spacing'], layer=0)
+    GC_pad_top_cutout = grating_coupler << GC_pad_side_cutout_ref
+    GC_pad_top_cutout.x = grating_holes.x
+    GC_pad_top_cutout.ymin = grating_holes.ymax + GCparams['gc_holes_tether_y']
+
+    GC_pad_bot_cutout = grating_coupler << GC_pad_side_cutout_ref
+    GC_pad_bot_cutout.x = grating_holes.x
+    GC_pad_bot_cutout.ymax = grating_holes.ymin - GCparams['gc_holes_tether_y']
 
     return grating_coupler
 

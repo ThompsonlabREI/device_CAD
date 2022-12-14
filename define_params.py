@@ -52,5 +52,6 @@ def generate_photonics_params():
     GCparams['bus_wg_width']=PhCparams['bus_wg_width']
     GCparams['cutout_around_GC_taper'] = 1000
     GCparams['bus_wg_to_phc_wg_spacing']=PhCparams['bus_wg_to_phc_wg_spacing']
+    GCparams['gc_holes_tether_y'] = 175
 
     return [PhCparams,GCparams]

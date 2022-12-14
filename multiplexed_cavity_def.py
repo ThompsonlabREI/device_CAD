@@ -41,6 +41,8 @@ def generate_aper_list(num_cavity_holes,
     ellipse_dims_to_add = numpy.ones(len(cav_aper_list)) * param_sweep_scaling[0]
     ellipse_dims_x.extend(ellipse_dims_to_add * baseline_hx)
     ellipse_dims_y.extend(ellipse_dims_to_add * baseline_hy)
+    print('param sweep scaling' + str(param_sweep_scaling))
+
 
     #for however many more than 1 number of cavities per beam,
     for num_more_1_cav in range(1,num_PhC_per_beam):
