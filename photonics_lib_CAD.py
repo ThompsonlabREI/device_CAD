@@ -16,11 +16,20 @@ import phidl.geometry as pg
 from phidl import quickplot as qp
 from multiplexed_cavity_def import *
 from define_params import *
+import pickle
 
 def generate_single_device(GC_scale,phc_scale_min,phc_scale_max,num_tether_along_taper,num_cavities_per_wg,gc_taper_len_x):
     PhCparams['num_PhC_per_wg'] = num_cavities_per_wg
     PhCparams['num_PhC_per_GC'] = 2 * PhCparams['num_PhC_per_wg']
     [ellipse_holes_top_beam_ref,ellipse_holes_bottom_beam_ref,aper_list,reflector_hole_set_ref] = generate_PhC_holes(PhCparams,phc_scale_min,phc_scale_max)
+    cavity_check_savename = 'matching_cavities_OR_code' + '.pickle'
+    with open(cavity_check_savename, 'wb') as handle:
+        pickle.dump(aper_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    with open(cavity_check_savename, 'rb') as handle:
+        aper_list_loaded = pickle.load(handle)
+        print("aper list loaded" + str(aper_list_loaded))
+        print("aper list type " + str(type(aper_list_loaded)))
     # print(aper_list)
     # reflector_hole_set.write_gds('reflector_hole_set.gds',unit=1e-9,precision=1e-12)
     # reflector_hole_set = generate_single_beam_set(aper_list,beam_ellipse_dims_x,beam_ellipse_dims_y,hole_center_x)
@@ -106,21 +115,29 @@ if __name__ == "__main__":
     # phc_scale_min = 0.87815
     # phc_scale_max = 1.0036
 
-    num_phc_in_sweep = [2,4, 6, 8, 10]
+    # num_phc_in_sweep = [2,4, 6, 8, 10]
+    num_phc_in_sweep=[4]
     # num_PhC_sweep = 4
-    phc_scale_min = 0.8
-    phc_scale_max = 1.1
+    # phc_scale_min = 0.8
+    # phc_scale_max = 1.1
+    phc_scale_min = 1.0
+    phc_scale_max = 1.0
     #overlap
     gc_phc_param_sweep_devices = []
     # num_tethers_sweep = [1,2,4,10]
-    min_num_tethers = 1
-    max_num_tethers = 10
+    # min_num_tethers = 1
+    # max_num_tethers = 10
+    min_num_tethers = 3
+    max_num_tethers = 5
     num_tethers_sweep = numpy.arange(min_num_tethers,max_num_tethers,2)
     print('num tethers sweep' + str(num_tethers_sweep))
 
-    GC_taper_min_x = 20000
+    # GC_taper_min_x = 20000
+    GC_taper_min_x = 185000
     GC_taper_max_x = 185000
-    gc_taper_lens = numpy.round(numpy.linspace(GC_taper_min_x,GC_taper_max_x,num=4),0)
+    num_taper_len_sweep = 1
+    gc_taper_lens = numpy.round(numpy.linspace(GC_taper_min_x,GC_taper_max_x,num=num_taper_len_sweep),0)
+    print("gc taper lengths" + str(gc_taper_lens))
     # phc_freq_scalings = numpy.linspace(phc_scale_min,phc_scale_max,num=num_PhC_sweep+1)
 
     # print(GC_scales)
@@ -150,7 +167,7 @@ if __name__ == "__main__":
     #get holes and GC together
     # pg.gridsweep()
 
-    grid_of_devices.write_gds('checking_device_sweep_array_tethers.gds',unit=1e-9,precision=1e-12)
+    grid_of_devices.write_gds('checking cell spacing cavity section.gds',unit=1e-9,precision=1e-12)
     # single_device_check.write_gds('checking combined device.gds',unit=1e-9,precision=1e-12)
 
     # gdspy.LayoutViewer(lib)

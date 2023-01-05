@@ -41,7 +41,7 @@ def generate_aper_list(num_cavity_holes,
     ellipse_dims_to_add = numpy.ones(len(cav_aper_list)) * param_sweep_scaling[0]
     ellipse_dims_x.extend(ellipse_dims_to_add * baseline_hx)
     ellipse_dims_y.extend(ellipse_dims_to_add * baseline_hy)
-    print('param sweep scaling' + str(param_sweep_scaling))
+    # print('param sweep scaling' + str(param_sweep_scaling))
 
 
     #for however many more than 1 number of cavities per beam,
@@ -64,6 +64,7 @@ def generate_aper_list(num_cavity_holes,
     ellipse_dims_to_add = numpy.ones(len(ends_mir_aper_list)) * param_sweep_scaling[-1]
     ellipse_dims_x.extend(ellipse_dims_to_add * baseline_hx)
     ellipse_dims_y.extend(ellipse_dims_to_add * baseline_hy)
+    print("aper list" + str(aper_list))
 
     return [aper_list,ellipse_dims_x,ellipse_dims_y]
 
@@ -111,15 +112,15 @@ def generate_PhC_holes(
 
 
     beam_ellipse_x_avg = numpy.average([numpy.average(top_beam_ellipse_dims_x),numpy.average(bot_beam_ellipse_dims_x)])
-    print("beam ellipse avg" +str(beam_ellipse_x_avg))
+    # print("beam ellipse avg" +str(beam_ellipse_x_avg))
     beam_ellipse_y_avg = numpy.average([numpy.average(top_beam_ellipse_dims_y),numpy.average(bot_beam_ellipse_dims_y)])
-    print("beam ellipse avg" +str(beam_ellipse_y_avg))
+    # print("beam ellipse avg" +str(beam_ellipse_y_avg))
     reflector_ellipse_dims_x = numpy.ones(PhCparams['num_bus_reflector_mirrors'])*beam_ellipse_x_avg
     reflector_ellipse_dims_y = numpy.ones(PhCparams['num_bus_reflector_mirrors']) * beam_ellipse_y_avg
     reflector_set = generate_single_beam_set(aper_list_reflector,reflector_ellipse_dims_x,reflector_ellipse_dims_y,hole_center_x)
 
-    print('top_beam_ellipse_dims' + str(top_beam_ellipse_dims_x))
-    print('bottom beam ellipse dims x' + str(bot_beam_ellipse_dims_x))
+    # print('top_beam_ellipse_dims' + str(top_beam_ellipse_dims_x))
+    # print('bottom beam ellipse dims x' + str(bot_beam_ellipse_dims_x))
 
     return [ellipse_holes_top_beam,ellipse_holes_bottom_beam,aper_list,reflector_set]
 

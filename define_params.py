@@ -25,7 +25,7 @@ def generate_photonics_params():
     PhCparams['bus_reflect_taper_len_x'] = PhCparams['bus_reflector_taper_len']
     PhCparams['num_cavity_holes']=12
     PhCparams['num_mirror_holes_middle'] = 2
-    PhCparams['num_mirror_holes_end'] = 11
+    PhCparams['num_mirror_holes_end'] = 8
     PhCparams['phc_beam_buffer_x'] = 2*PhCparams['beam_tether_x']
 
     GCparams = {}
