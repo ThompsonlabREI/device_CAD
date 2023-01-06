@@ -118,10 +118,10 @@ if __name__ == "__main__":
     # num_phc_in_sweep = [2,4, 6, 8, 10]
     num_phc_in_sweep=[4]
     # num_PhC_sweep = 4
-    # phc_scale_min = 0.8
-    # phc_scale_max = 1.1
-    phc_scale_min = 1.0
-    phc_scale_max = 1.0
+    phc_scale_min = 0.8
+    phc_scale_max = 1.1
+    # phc_scale_min = 1.0
+    # phc_scale_max = 1.0
     #overlap
     gc_phc_param_sweep_devices = []
     # num_tethers_sweep = [1,2,4,10]
