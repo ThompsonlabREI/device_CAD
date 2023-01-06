@@ -62,7 +62,7 @@ def generate_aper_list(num_cavity_holes,
         ellipse_dims_x.extend(ellipse_dims_to_add_right * baseline_hx)
         ellipse_dims_y.extend(ellipse_dims_to_add_right * baseline_hy)
 
-        #add cavity set (last in for loop will be rightmost cavity on this beam)
+        #add cavity set (last in for loop will be rightmost cavity on this bxeam)
         aper_list.extend(cav_aper_list)
         ellipse_dims_to_add = numpy.ones(len(cav_aper_list)) * param_sweep_scaling[num_more_1_cav]
         ellipse_dims_x.extend(ellipse_dims_to_add * baseline_hx)
@@ -103,14 +103,18 @@ def generate_PhC_holes(
 
     hole_center_y_new = 0
     hole_center_x = 0
-    ellipse_dims_check_savename = 'ellipse_dims_top_x' + '.pickle'
-    with open(ellipse_dims_check_savename, 'wb') as handle:
-        pickle.dump(top_beam_ellipse_dims_x, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    ellipse_dims_check_savename_top = 'ellipse_dims_top_x_min_scale_' + str(round(this_PhC_set_scale_min,4)) + '.pickle'
+    ellipse_dims_check_savename_bottom = 'ellipse_dims_bottom_xmin_scale_' + str(round(this_PhC_set_scale_min,4)) + '.pickle'
 
-    with open(ellipse_dims_check_savename, 'rb') as handle:
-        top_beam_ellipse_dims_x_loaded = pickle.load(handle)
-        print("top beam list loaded" + str(top_beam_ellipse_dims_x_loaded))
-        print("top beam list type " + str(type(top_beam_ellipse_dims_x_loaded)))
+    with open(ellipse_dims_check_savename_top, 'wb') as handle_top:
+        pickle.dump(top_beam_ellipse_dims_x, handle_top, protocol=pickle.HIGHEST_PROTOCOL)
+
+    with open(ellipse_dims_check_savename_bottom, 'wb') as handle_bot:
+        pickle.dump(bot_beam_ellipse_dims_x, handle_bot, protocol=pickle.HIGHEST_PROTOCOL)
+    # with open(ellipse_dims_check_savename, 'rb') as handle:
+    #     top_beam_ellipse_dims_x_loaded = pickle.load(handle)
+    #     print("top beam list loaded" + str(top_beam_ellipse_dims_x_loaded))
+    #     print("top beam list type " + str(type(top_beam_ellipse_dims_x_loaded)))
     ellipse_holes_top_beam = generate_single_beam_set(aper_list, top_beam_ellipse_dims_x, top_beam_ellipse_dims_y, hole_center_x)
     ellipse_holes_bottom_beam = generate_single_beam_set(aper_list_bot, bot_beam_ellipse_dims_x, bot_beam_ellipse_dims_y, hole_center_x)
 

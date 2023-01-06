@@ -17,6 +17,7 @@ from phidl import quickplot as qp
 from multiplexed_cavity_def import *
 from define_params import *
 import pickle
+# from scipy.ndimage.interpolation import shift
 
 def generate_single_device(GC_scale,phc_scale_min,phc_scale_max,num_tether_along_taper,num_cavities_per_wg,gc_taper_len_x):
     PhCparams['num_PhC_per_wg'] = num_cavities_per_wg
@@ -117,9 +118,9 @@ if __name__ == "__main__":
 
     # num_phc_in_sweep = [2,4, 6, 8, 10]
     num_phc_in_sweep=[4]
-    # num_PhC_sweep = 4
-    phc_scale_min = 0.8
-    phc_scale_max = 1.1
+    num_PhC_center_sweep = 5
+    phc_scale_min_param_sweep = 0.8
+    phc_scale_max_param_sweep = 1.1
     # phc_scale_min = 1.0
     # phc_scale_max = 1.0
     #overlap
@@ -138,8 +139,13 @@ if __name__ == "__main__":
     num_taper_len_sweep = 1
     gc_taper_lens = numpy.round(numpy.linspace(GC_taper_min_x,GC_taper_max_x,num=num_taper_len_sweep),0)
     print("gc taper lengths" + str(gc_taper_lens))
-    # phc_freq_scalings = numpy.linspace(phc_scale_min,phc_scale_max,num=num_PhC_sweep+1)
-
+    # phc_freq_scalings_mins = numpy.linspace(phc_scale_min_param_sweep,phc_scale_max_param_sweep,num=num_PhC_center_sweep,endpoint=False)
+    # print("phc freq scalings mins" + str(phc_freq_scalings_mins))
+    # phc_freq_scalings_maxs = numpy.array([phc_freq_scalings_mins[-1]+(phc_freq_scalings_mins[-1]-phc_freq_scalings_mins[-2])])
+    # phc_freq_scalings_maxs=numpy.append(phc_freq_scalings_mins[1:],phc_freq_scalings_maxs)
+    # print("phc freq scalings maxs" + str(phc_freq_scalings_maxs))
+    phc_freq_scalings = numpy.linspace(phc_scale_min_param_sweep,phc_scale_max_param_sweep,num=num_PhC_center_sweep+2)
+    print("phc freq scalings" + str(phc_freq_scalings))
     # print(GC_scales)
     for num_phc_sweep in num_phc_in_sweep:
         print('num phc on this wg' + str(num_phc_sweep))
@@ -149,9 +155,12 @@ if __name__ == "__main__":
             print('num tethers' + str(num_tethers))
             # GCparams['']
             for gc_taper_len in gc_taper_lens:
-                print('gc taper len' + str(gc_taper_len))
-                single_device = generate_single_device(GC_scales[1],phc_scale_min,phc_scale_max,num_tethers,num_phc_sweep,gc_taper_len)
-                gc_phc_param_sweep_devices.append(single_device)
+                for phc_chip_scale_index in range(num_PhC_center_sweep):
+                    print("min index" + str(phc_chip_scale_index))
+                    print("max index" + str(phc_chip_scale_index+2))
+                # print('gc taper len' + str(gc_taper_len))
+                    single_device = generate_single_device(GC_scales[1],phc_freq_scalings[phc_chip_scale_index],phc_freq_scalings[phc_chip_scale_index+2],num_tethers,num_phc_sweep,gc_taper_len)
+                    gc_phc_param_sweep_devices.append(single_device)
 
     # for num_phc_sweep_index in range(len(num_phc_in_sweep)):
     #     phc_freq_scalings = numpy.linspace(phc_scale_min, phc_scale_max, num=num_phc_in_sweep[num_phc_sweep_index] + 1)
@@ -162,7 +171,7 @@ if __name__ == "__main__":
     #             gc_phc_param_sweep_devices.append(single_device)
 
     # single_device_check = generate_single_device(GC_scales[0],phc_scale_min,phc_scale_max)
-    grid_of_devices = pg.grid(gc_phc_param_sweep_devices,spacing=(xspacing,yspacing),separation=True,shape=(len(num_phc_in_sweep),len(num_tethers_sweep)*len(gc_taper_lens)),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
+    grid_of_devices = pg.grid(gc_phc_param_sweep_devices,spacing=(xspacing,yspacing),separation=True,shape=(num_PhC_center_sweep,len(num_tethers_sweep)*len(gc_taper_lens)),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
 
     #get holes and GC together
     # pg.gridsweep()
