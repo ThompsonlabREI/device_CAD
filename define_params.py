@@ -27,6 +27,7 @@ def generate_photonics_params():
     PhCparams['num_mirror_holes_middle'] = 2
     PhCparams['num_mirror_holes_end'] = 8
     PhCparams['phc_beam_buffer_x'] = 2*PhCparams['beam_tether_x']
+    PhCparams['num_ellipse_points']=199
 
     GCparams = {}
     GCparams['a_2DPhC'] = 232.61  # looks like this is the same as the
@@ -53,5 +54,6 @@ def generate_photonics_params():
     GCparams['cutout_around_GC_taper'] = 1000
     GCparams['bus_wg_to_phc_wg_spacing']=PhCparams['bus_wg_to_phc_wg_spacing']
     GCparams['gc_holes_tether_y'] = 175
+    GCparams['num_GC_circle_points']=144
 
     return [PhCparams,GCparams]

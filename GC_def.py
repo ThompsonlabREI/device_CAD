@@ -9,16 +9,20 @@ def generate_grating_holes(air_hole_diameter_list_base,
     constgrating_airhole_scale_factor,
     GCparams,
     grating_pad_origin,
-    GC_hole_layer):
+    GC_hole_layer,
+    num_grating_airhole_points):
     SWG_holes = Device()
 
     air_hole_diameter_list = numpy.asarray(
         air_hole_diameter_list_base) * constgrating_airhole_scale_factor  # SRP: varies from 0.85 to 1.05 for first run
-    print("scaled airhole diameter list for GC" + str(air_hole_diameter_list))
+    # print("scaled airhole diameter list for GC" + str(air_hole_diameter_list))
     # air_hole_diameter_list = numpy.asarray(air_hole_diameter_list_base) + constgrating_airholescale_list[iB] # take off the 1.13 scaling factor so that GC hole sizes match lumerical
     grating_start_x = grating_pad_origin[0] - GCparams['grating_pad_length'] / 2.0 + GCparams['grating_pad_buffer']
     grating_start_y = grating_pad_origin[1] - GCparams['grating_pad_width'] / 2.0 + GCparams['grating_pad_buffer']
     grating_periods_x_list = numpy.zeros(len(air_hole_diameter_list)) + GCparams['grating_period_x_start']
+    grating_phi_res = round((360.0/num_grating_airhole_points),1)
+    print("angle res for grating" + str(grating_phi_res))
+
     for iG in range(1, len(air_hole_diameter_list), 1):
         grating_periods_x_list[iG] = grating_periods_x_list[iG - 1] + GCparams['phaseFactor'] * GCparams['grating_delta_index'] * \
                                      grating_periods_x_list[iG - 1] * grating_periods_x_list[iG - 1] / GCparams['resonance']
@@ -29,9 +33,7 @@ def generate_grating_holes(air_hole_diameter_list_base,
             grating_column_start_x = grating_start_x + air_hole_diameter_list[iGx] / 2.0 + numpy.sum(
                 grating_periods_x_list[:iGx])
             grating_column_start_y = grating_start_y + numpy.sqrt(3) * GCparams['a_2DPhC'] * iGy
-            hole = pg.circle(radius=air_hole_diameter_list[iGx] / 2.0, angle_resolution=2.5, layer=GC_hole_layer)
-            # hole2 = pg.circle(radius = air_hole_diameter_list[iGx] / 2.0, angle_resolution=2.5,layer=0)
-            # hole3 = pg.circle(radius = air_hole_diameter_list[iGx] / 2.0, angle_resolution=2.5,layer=0)
+            hole = pg.circle(radius=air_hole_diameter_list[iGx] / 2.0, angle_resolution=grating_phi_res, layer=GC_hole_layer)
             hole1 = SWG_holes << hole
             hole2 = SWG_holes << hole
             if iGy < (GCparams['num_grating_periods_y'] - 1):
@@ -126,7 +128,8 @@ def subwavelength_grating(
     constgrating_airhole_scale_factor,
     GCparams,
     grating_pad_center,
-    GC_hole_layer)
+    GC_hole_layer,
+    GCparams['num_GC_circle_points'])
 
     [silicon_stuff_all_layers,pad_center] = generate_silicon_skeleton(GCparams,num_tether_along_taper,GC_tether_x_nm)
     # silicon_stuff_all_layers.write_gds('checking_cutout_gc.gds',unit=1e-9,precision=1e-12)

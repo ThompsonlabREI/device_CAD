@@ -27,8 +27,8 @@ def generate_single_device(GC_scale,phc_scale_min,phc_scale_max,num_tether_along
     with open(cavity_check_savename, 'wb') as handle:
         pickle.dump(aper_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-    with open(cavity_check_savename, 'rb') as handle:
-        aper_list_loaded = pickle.load(handle)
+    # with open(cavity_check_savename, 'rb') as handle:
+    #     aper_list_loaded = pickle.load(handle)
         # print("aper list loaded" + str(aper_list_loaded))
         # print("aper list type " + str(type(aper_list_loaded)))
     # print(aper_list)
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     #get holes and GC together
     # pg.gridsweep()
 
-    grid_of_devices.write_gds('checking_GC_and_phc_center_now_GC_param_sweep.gds',unit=1e-9,precision=1e-12)
+    grid_of_devices.write_gds('matching ellipse angle resolution and GC angle res.gds',unit=1e-9,precision=1e-12)
     # single_device_check.write_gds('checking combined device.gds',unit=1e-9,precision=1e-12)
 
     # gdspy.LayoutViewer(lib)

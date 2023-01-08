@@ -77,11 +77,13 @@ def generate_aper_list(num_cavity_holes,
 
     return [aper_list,ellipse_dims_x,ellipse_dims_y]
 
-def generate_single_beam_set(aper_list,beam_ellipse_dims_x,beam_ellipse_dims_y,hole_center_x):
+def generate_single_beam_set(aper_list,beam_ellipse_dims_x,beam_ellipse_dims_y,hole_center_x,num_ellipse_points):
     ellipse_holes_single_beam = Device()
+    phi_res = round((360.0/num_ellipse_points),1)
+    print("angle res for ellipses" + str(phi_res))
     for ellipse_index in range(len(aper_list)):
         # hole_center_x = aper_list[ellipse_index]/ 2.0  # SRP: aper_list is used to set center_x of ellipse
-        PhC_ellipse = pg.ellipse(radii=(beam_ellipse_dims_x[ellipse_index]/2,beam_ellipse_dims_y[ellipse_index]/2),angle_resolution=2.5,layer=5)
+        PhC_ellipse = pg.ellipse(radii=(beam_ellipse_dims_x[ellipse_index]/2,beam_ellipse_dims_y[ellipse_index]/2),angle_resolution=phi_res,layer=5)
         ellipse_holes_single_beam.add_ref(PhC_ellipse).movex(hole_center_x)
         # hole_center_y_new += aper # SRP: aper_list is used to set center_y of ellipse
         hole_center_x += aper_list[ellipse_index]
@@ -105,6 +107,7 @@ def generate_PhC_holes(
     hole_center_x = 0
     ellipse_dims_check_savename_top = 'ellipse_dims_top_x_min_scale_' + str(round(this_PhC_set_scale_min,4)) + '.pickle'
     ellipse_dims_check_savename_bottom = 'ellipse_dims_bottom_xmin_scale_' + str(round(this_PhC_set_scale_min,4)) + '.pickle'
+    # print("top beam ellipse dims y" + str(top_beam_ellipse_dims_y))
 
     with open(ellipse_dims_check_savename_top, 'wb') as handle_top:
         pickle.dump(top_beam_ellipse_dims_x, handle_top, protocol=pickle.HIGHEST_PROTOCOL)
@@ -115,8 +118,8 @@ def generate_PhC_holes(
     #     top_beam_ellipse_dims_x_loaded = pickle.load(handle)
     #     print("top beam list loaded" + str(top_beam_ellipse_dims_x_loaded))
     #     print("top beam list type " + str(type(top_beam_ellipse_dims_x_loaded)))
-    ellipse_holes_top_beam = generate_single_beam_set(aper_list, top_beam_ellipse_dims_x, top_beam_ellipse_dims_y, hole_center_x)
-    ellipse_holes_bottom_beam = generate_single_beam_set(aper_list_bot, bot_beam_ellipse_dims_x, bot_beam_ellipse_dims_y, hole_center_x)
+    ellipse_holes_top_beam = generate_single_beam_set(aper_list, top_beam_ellipse_dims_x, top_beam_ellipse_dims_y, hole_center_x, PhCparams['num_ellipse_points'])
+    ellipse_holes_bottom_beam = generate_single_beam_set(aper_list_bot, bot_beam_ellipse_dims_x, bot_beam_ellipse_dims_y, hole_center_x, PhCparams['num_ellipse_points'])
 
     #get aper list and hole scalings for the bottom beam
 
@@ -138,7 +141,7 @@ def generate_PhC_holes(
     # print("beam ellipse avg" +str(beam_ellipse_y_avg))
     reflector_ellipse_dims_x = numpy.ones(PhCparams['num_bus_reflector_mirrors'])*beam_ellipse_x_avg
     reflector_ellipse_dims_y = numpy.ones(PhCparams['num_bus_reflector_mirrors']) * beam_ellipse_y_avg
-    reflector_set = generate_single_beam_set(aper_list_reflector,reflector_ellipse_dims_x,reflector_ellipse_dims_y,hole_center_x)
+    reflector_set = generate_single_beam_set(aper_list_reflector,reflector_ellipse_dims_x,reflector_ellipse_dims_y,hole_center_x, PhCparams['num_ellipse_points'])
 
     # print('top_beam_ellipse_dims' + str(top_beam_ellipse_dims_x))
     # print('bottom beam ellipse dims x' + str(bot_beam_ellipse_dims_x))
