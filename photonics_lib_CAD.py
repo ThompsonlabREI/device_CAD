@@ -53,7 +53,7 @@ def generate_single_device(GC_scale,phc_scale_min,phc_scale_max,num_tether_along
     reflector_skeleton.y=PhC_beam_skeleton.y
     reflector_hole_set = PhC_holes_and_skeleton << reflector_hole_set_ref
     reflector_hole_set.y=reflector_skeleton.y
-    reflector_hole_set.xmax=reflector_skeleton.xmax
+    reflector_hole_set.xmax=reflector_skeleton.xmax-PhCparams['aper_mir'] #offseting the holes from the buffer between end of holes and start of non-buffer region
 
     ellipse_holes_bottom_beam = PhC_holes_and_skeleton << ellipse_holes_bottom_beam_ref
     ellipse_holes_bottom_beam.mirror(p1=(PhC_beam_skeleton.xmin,PhC_beam_skeleton.y),p2=(PhC_beam_skeleton.xmax,PhC_beam_skeleton.y))
@@ -84,7 +84,7 @@ if __name__ == "__main__":
                                            GCparams['grating_first_index'] - GCparams['grating_delta_index'] * x) - 1.931 * GCparams['a_2DPhC'] for x in grating_x_num]
     print("air hole diameter list base GC" + str(air_hole_diameter_list_base))
     #relevant params for sweep
-    num_GC_scalings = 5
+    num_GC_scalings = 3
     GC_scale_center = 0.97
     GC_scale_min = 0.9
     GC_scale_max = 1.1
@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
     # num_phc_in_sweep = [2,4, 6, 8, 10]
     num_phc_in_sweep=[4]
-    num_PhC_center_sweep = 6
+    num_PhC_center_sweep = 3
     phc_scale_min_param_sweep = 0.8
     phc_scale_max_param_sweep = 1.1
 

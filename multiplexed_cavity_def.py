@@ -213,7 +213,7 @@ def generate_PhC_skeleton(
     #generate reflector skeleton
     #taper part
     #reflector beam
-    reflector_beam_path = pp.straight(length=reflector_len_x)
+    reflector_beam_path = pp.straight(length=reflector_len_x+PhCparams['aper_mir']) #add the aper on for buffer between end of ellipse cutouts and start of non-suspended region
     reflector_taper_path = pp.straight(length=PhCparams['bus_reflect_taper_len_x'])
     reflector_beam_ref = reflector_beam_path.extrude(PhCparams['PhC_wy'],layer=phc_skeleton_layer)
     reflector_taper_ref = reflector_taper_path.extrude([PhCparams['bus_wg_width'],PhCparams['PhC_wy']],layer=phc_skeleton_layer)
@@ -222,7 +222,7 @@ def generate_PhC_skeleton(
     phc_reflector_beam = reflector_skeleton << reflector_beam_ref
     phc_reflector_taper = reflector_skeleton << reflector_taper_ref
     phc_reflector_taper.xmax=phc_reflector_beam.xmin
-    # reflector_skeleton.write_gds('bus_reflector_skeleton.gds', unit=1e-9, precision=1e-12)
+    reflector_skeleton.write_gds('bus_reflector_skeleton.gds', unit=1e-9, precision=1e-12)
     reflector_outer_rect_ref = pg.rectangle(size=(reflector_skeleton.xsize,PhCparams['bus_wg_width']+2*PhCparams['bus_wg_to_phc_wg_spacing']),layer=7)
     reflector_outer_rect_ref.center = reflector_skeleton.center
     reflector_cutout = pg.boolean(A=reflector_outer_rect_ref,B=reflector_skeleton,operation='not',precision=1e-9,num_divisions=[1,1],layer=0)
