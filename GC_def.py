@@ -14,6 +14,7 @@ def generate_grating_holes(air_hole_diameter_list_base,
 
     air_hole_diameter_list = numpy.asarray(
         air_hole_diameter_list_base) * constgrating_airhole_scale_factor  # SRP: varies from 0.85 to 1.05 for first run
+    print("scaled airhole diameter list for GC" + str(air_hole_diameter_list))
     # air_hole_diameter_list = numpy.asarray(air_hole_diameter_list_base) + constgrating_airholescale_list[iB] # take off the 1.13 scaling factor so that GC hole sizes match lumerical
     grating_start_x = grating_pad_origin[0] - GCparams['grating_pad_length'] / 2.0 + GCparams['grating_pad_buffer']
     grating_start_y = grating_pad_origin[1] - GCparams['grating_pad_width'] / 2.0 + GCparams['grating_pad_buffer']

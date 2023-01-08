@@ -29,8 +29,8 @@ def generate_single_device(GC_scale,phc_scale_min,phc_scale_max,num_tether_along
 
     with open(cavity_check_savename, 'rb') as handle:
         aper_list_loaded = pickle.load(handle)
-        print("aper list loaded" + str(aper_list_loaded))
-        print("aper list type " + str(type(aper_list_loaded)))
+        # print("aper list loaded" + str(aper_list_loaded))
+        # print("aper list type " + str(type(aper_list_loaded)))
     # print(aper_list)
     # reflector_hole_set.write_gds('reflector_hole_set.gds',unit=1e-9,precision=1e-12)
     # reflector_hole_set = generate_single_beam_set(aper_list,beam_ellipse_dims_x,beam_ellipse_dims_y,hole_center_x)
@@ -82,47 +82,31 @@ if __name__ == "__main__":
     air_hole_diameter_list_base = [-0.09594 * GCparams['a_2DPhC'] * (GCparams['grating_first_index'] - GCparams['grating_delta_index'] * x) ** 4 + 0.9546 * GCparams['a_2DPhC'] * (GCparams['grating_first_index'] - GCparams['grating_delta_index'] * x) ** 3 - 3.586 * GCparams['a_2DPhC'] * (
             GCparams['grating_first_index'] - GCparams['grating_delta_index'] * x) ** 2 + 5.542 * GCparams['a_2DPhC'] * (
                                            GCparams['grating_first_index'] - GCparams['grating_delta_index'] * x) - 1.931 * GCparams['a_2DPhC'] for x in grating_x_num]
-
+    print("air hole diameter list base GC" + str(air_hole_diameter_list_base))
     #relevant params for sweep
-    num_GC_scalings = 2
-    GC_scale_min = 0.95
-    GC_scale_max = 1.05
-    GC_scales = numpy.linspace(GC_scale_min,GC_scale_max,num=num_GC_scalings)
-    # print("gc scales" + str(GC_scales))
+    num_GC_scalings = 5
+    GC_scale_center = 0.97
+    GC_scale_min = 0.9
+    GC_scale_max = 1.1
+    GC_scales = numpy.linspace(GC_scale_center*GC_scale_min,GC_scale_center*GC_scale_max,num=num_GC_scalings)
+    # GC_scales = numpy.ones(num_GC_scalings)*GC_scale_center
+
+    print("gc scales" + str(GC_scales))
 
     xspacing = 50000
     yspacing = 50000
 
-    # GC_scales = [0.97,1.01,1.05]
-    # grating_coupler_list = []
-    # silicon_skeleton_list = []
     grating_pad_center = [0,0]
     GC_hole_layer = 0
     GC_tether_x = 1000 #could try sweeping
     # num_tether_along_taper = 3 #could try sweeping
 
-    # for GC_scale in GC_scales:
-    #     grating_coupler = subwavelength_grating(air_hole_diameter_list_base,GC_scale,GCparams,grating_pad_center,GC_hole_layer, num_tether_along_taper, GC_tether_x)
-    #     grating_coupler_list.append(grating_coupler)
-    #     # silicon_skeleton_list.append(silicon_skeleton)
-    # # grid_of_holes = pg.grid(grating_coupler_list, spacing=(xspacing,yspacing),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
-    # # grid_of_silicon = pg.grid(silicon_skeleton_list, spacing=(xspacing,yspacing),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
-    # grid_of_GCs = pg.grid(grating_coupler_list,spacing=(xspacing,yspacing),separation=True,shape=(1,3),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
-
-    #create PhC part of cavity
-    # num_cavity_holes = 12
-    # num_mirror_holes_middle = 2
-    # num_mirror_holes_end = 11
-    # phc_scale_min = 0.87815
-    # phc_scale_max = 1.0036
-
     # num_phc_in_sweep = [2,4, 6, 8, 10]
     num_phc_in_sweep=[4]
-    num_PhC_center_sweep = 5
+    num_PhC_center_sweep = 6
     phc_scale_min_param_sweep = 0.8
     phc_scale_max_param_sweep = 1.1
-    # phc_scale_min = 1.0
-    # phc_scale_max = 1.0
+
     #overlap
     gc_phc_param_sweep_devices = []
     # num_tethers_sweep = [1,2,4,10]
@@ -139,11 +123,6 @@ if __name__ == "__main__":
     num_taper_len_sweep = 1
     gc_taper_lens = numpy.round(numpy.linspace(GC_taper_min_x,GC_taper_max_x,num=num_taper_len_sweep),0)
     print("gc taper lengths" + str(gc_taper_lens))
-    # phc_freq_scalings_mins = numpy.linspace(phc_scale_min_param_sweep,phc_scale_max_param_sweep,num=num_PhC_center_sweep,endpoint=False)
-    # print("phc freq scalings mins" + str(phc_freq_scalings_mins))
-    # phc_freq_scalings_maxs = numpy.array([phc_freq_scalings_mins[-1]+(phc_freq_scalings_mins[-1]-phc_freq_scalings_mins[-2])])
-    # phc_freq_scalings_maxs=numpy.append(phc_freq_scalings_mins[1:],phc_freq_scalings_maxs)
-    # print("phc freq scalings maxs" + str(phc_freq_scalings_maxs))
     phc_freq_scalings = numpy.linspace(phc_scale_min_param_sweep,phc_scale_max_param_sweep,num=num_PhC_center_sweep+2)
     print("phc freq scalings" + str(phc_freq_scalings))
     # print(GC_scales)
@@ -155,12 +134,16 @@ if __name__ == "__main__":
             print('num tethers' + str(num_tethers))
             # GCparams['']
             for gc_taper_len in gc_taper_lens:
-                for phc_chip_scale_index in range(num_PhC_center_sweep):
-                    print("min index" + str(phc_chip_scale_index))
-                    print("max index" + str(phc_chip_scale_index+2))
-                # print('gc taper len' + str(gc_taper_len))
-                    single_device = generate_single_device(GC_scales[1],phc_freq_scalings[phc_chip_scale_index],phc_freq_scalings[phc_chip_scale_index+2],num_tethers,num_phc_sweep,gc_taper_len)
-                    gc_phc_param_sweep_devices.append(single_device)
+                for GC_scale in GC_scales:
+                    for phc_chip_scale_index in range(num_PhC_center_sweep):
+                    # print("min index" + str(phc_chip_scale_index))
+                    # print("max index" + str(phc_chip_scale_index+2))
+                        # print('gc taper len' + str(gc_taper_len))
+                        single_device = generate_single_device(GC_scale,phc_freq_scalings[phc_chip_scale_index],phc_freq_scalings[phc_chip_scale_index+2],num_tethers,num_phc_sweep,gc_taper_len)
+                        label_device_param_sweep = 'phc center = ' + str(round(numpy.mean([phc_freq_scalings[phc_chip_scale_index],phc_freq_scalings[phc_chip_scale_index+2]]),4)) + ', GC scale = ' + str(GC_scale)
+                        print(label_device_param_sweep)
+                        single_device.add_label(text=label_device_param_sweep,layer=GC_hole_layer,anchor='nw')
+                        gc_phc_param_sweep_devices.append(single_device)
 
     # for num_phc_sweep_index in range(len(num_phc_in_sweep)):
     #     phc_freq_scalings = numpy.linspace(phc_scale_min, phc_scale_max, num=num_phc_in_sweep[num_phc_sweep_index] + 1)
@@ -171,12 +154,12 @@ if __name__ == "__main__":
     #             gc_phc_param_sweep_devices.append(single_device)
 
     # single_device_check = generate_single_device(GC_scales[0],phc_scale_min,phc_scale_max)
-    grid_of_devices = pg.grid(gc_phc_param_sweep_devices,spacing=(xspacing,yspacing),separation=True,shape=(num_PhC_center_sweep,len(num_tethers_sweep)*len(gc_taper_lens)),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
+    grid_of_devices = pg.grid(gc_phc_param_sweep_devices,spacing=(xspacing,yspacing),separation=True,shape=(num_PhC_center_sweep,len(num_tethers_sweep)*len(gc_taper_lens)*len(GC_scales)),align_x='x',align_y='y',edge_x='x',edge_y='ymax')
 
     #get holes and GC together
     # pg.gridsweep()
 
-    grid_of_devices.write_gds('checking cell spacing cavity section.gds',unit=1e-9,precision=1e-12)
+    grid_of_devices.write_gds('checking_GC_and_phc_center_now_GC_param_sweep.gds',unit=1e-9,precision=1e-12)
     # single_device_check.write_gds('checking combined device.gds',unit=1e-9,precision=1e-12)
 
     # gdspy.LayoutViewer(lib)

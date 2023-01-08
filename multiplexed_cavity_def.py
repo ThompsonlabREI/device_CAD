@@ -73,7 +73,7 @@ def generate_aper_list(num_cavity_holes,
     ellipse_dims_to_add = numpy.ones(len(ends_mir_aper_list)) * param_sweep_scaling[-1]
     ellipse_dims_x.extend(ellipse_dims_to_add * baseline_hx)
     ellipse_dims_y.extend(ellipse_dims_to_add * baseline_hy)
-    print("aper list" + str(aper_list))
+    # print("aper list" + str(aper_list))
 
     return [aper_list,ellipse_dims_x,ellipse_dims_y]
 
