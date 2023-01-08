@@ -34,8 +34,7 @@ def generate_photonics_params():
     GCparams['num_grating_periods_x'] = 20
     GCparams['num_grating_periods_y'] = 31  # SC total grating y width 12.6 um, maximum overlap with fiber
     GCparams['grating_period_x_start'] = 700
-    GCparams[
-        'grating_pad_width'] = 12600  # assuming this is the same as the taperendwidth parameter in the lumerical geometry file
+    GCparams['grating_pad_width'] = 12600  # assuming this is the same as the taperendwidth parameter in the lumerical geometry file
     GCparams['grating_first_index'] = 2.55
     GCparams['grating_delta_index'] = 0.02
     GCparams['phaseFactor'] = 0.582

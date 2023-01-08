@@ -80,7 +80,7 @@ def generate_aper_list(num_cavity_holes,
 def generate_single_beam_set(aper_list,beam_ellipse_dims_x,beam_ellipse_dims_y,hole_center_x,num_ellipse_points):
     ellipse_holes_single_beam = Device()
     phi_res = round((360.0/num_ellipse_points),1)
-    print("angle res for ellipses" + str(phi_res))
+    # print("angle res for ellipses" + str(phi_res))
     for ellipse_index in range(len(aper_list)):
         # hole_center_x = aper_list[ellipse_index]/ 2.0  # SRP: aper_list is used to set center_x of ellipse
         PhC_ellipse = pg.ellipse(radii=(beam_ellipse_dims_x[ellipse_index]/2,beam_ellipse_dims_y[ellipse_index]/2),angle_resolution=phi_res,layer=5)
@@ -222,9 +222,9 @@ def generate_PhC_skeleton(
     phc_reflector_beam = reflector_skeleton << reflector_beam_ref
     phc_reflector_taper = reflector_skeleton << reflector_taper_ref
     phc_reflector_taper.xmax=phc_reflector_beam.xmin
-    reflector_skeleton.write_gds('bus_reflector_skeleton.gds', unit=1e-9, precision=1e-12)
+    # reflector_skeleton.write_gds('bus_reflector_skeleton.gds', unit=1e-9, precision=1e-12)
     reflector_outer_rect_ref = pg.rectangle(size=(reflector_skeleton.xsize,PhCparams['bus_wg_width']+2*PhCparams['bus_wg_to_phc_wg_spacing']),layer=7)
     reflector_outer_rect_ref.center = reflector_skeleton.center
     reflector_cutout = pg.boolean(A=reflector_outer_rect_ref,B=reflector_skeleton,operation='not',precision=1e-9,num_divisions=[1,1],layer=0)
-    reflector_cutout.write_gds('bus_reflector_skeleton_cutout.gds', unit=1e-9, precision=1e-12)
+    # reflector_cutout.write_gds('bus_reflector_skeleton_cutout.gds', unit=1e-9, precision=1e-12)
     return [phc_cutout_only,reflector_cutout]

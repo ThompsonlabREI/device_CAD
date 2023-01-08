@@ -93,8 +93,9 @@ if __name__ == "__main__":
 
     print("gc scales" + str(GC_scales))
 
-    xspacing = 50000
-    yspacing = 50000
+    HF_undercut_propagation = 0.75*GCparams['grating_pad_width']
+    xspacing = 4*HF_undercut_propagation
+    yspacing = 4*HF_undercut_propagation
 
     grating_pad_center = [0,0]
     GC_hole_layer = 0
@@ -136,13 +137,15 @@ if __name__ == "__main__":
             for gc_taper_len in gc_taper_lens:
                 for GC_scale in GC_scales:
                     for phc_chip_scale_index in range(num_PhC_center_sweep):
-                    # print("min index" + str(phc_chip_scale_index))
-                    # print("max index" + str(phc_chip_scale_index+2))
                         # print('gc taper len' + str(gc_taper_len))
                         single_device = generate_single_device(GC_scale,phc_freq_scalings[phc_chip_scale_index],phc_freq_scalings[phc_chip_scale_index+2],num_tethers,num_phc_sweep,gc_taper_len)
-                        label_device_param_sweep = 'phc center = ' + str(round(numpy.mean([phc_freq_scalings[phc_chip_scale_index],phc_freq_scalings[phc_chip_scale_index+2]]),4)) + ', GC scale = ' + str(GC_scale)
+                        label_device_param_sweep = 'phc center = ' + str(round(numpy.mean([phc_freq_scalings[phc_chip_scale_index],phc_freq_scalings[phc_chip_scale_index+2]]),4)) + '\nGC scale = ' + str(GC_scale)
                         print(label_device_param_sweep)
-                        single_device.add_label(text=label_device_param_sweep,layer=GC_hole_layer,anchor='nw')
+                        # single_device.add_label(text=label_device_param_sweep,layer=GC_hole_layer,anchor='nw')
+                        label_text_ref = pg.text(text = label_device_param_sweep, size=2000, justify='left',layer=GC_hole_layer)
+                        label_text = single_device << label_text_ref
+                        label_text.x = single_device.xmin
+                        label_text.ymin = single_device.ymax + 3*HF_undercut_propagation # 1 HF undercut propagation from either direction + 1 for buffer
                         gc_phc_param_sweep_devices.append(single_device)
 
     # for num_phc_sweep_index in range(len(num_phc_in_sweep)):
@@ -159,7 +162,7 @@ if __name__ == "__main__":
     #get holes and GC together
     # pg.gridsweep()
 
-    grid_of_devices.write_gds('matching ellipse angle resolution and GC angle res.gds',unit=1e-9,precision=1e-12)
+    grid_of_devices.write_gds('adding param labels for chip to chip sweep.gds',unit=1e-9,precision=1e-12)
     # single_device_check.write_gds('checking combined device.gds',unit=1e-9,precision=1e-12)
 
     # gdspy.LayoutViewer(lib)

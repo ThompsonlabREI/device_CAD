@@ -21,7 +21,7 @@ def generate_grating_holes(air_hole_diameter_list_base,
     grating_start_y = grating_pad_origin[1] - GCparams['grating_pad_width'] / 2.0 + GCparams['grating_pad_buffer']
     grating_periods_x_list = numpy.zeros(len(air_hole_diameter_list)) + GCparams['grating_period_x_start']
     grating_phi_res = round((360.0/num_grating_airhole_points),1)
-    print("angle res for grating" + str(grating_phi_res))
+    # print("angle res for grating" + str(grating_phi_res))
 
     for iG in range(1, len(air_hole_diameter_list), 1):
         grating_periods_x_list[iG] = grating_periods_x_list[iG - 1] + GCparams['phaseFactor'] * GCparams['grating_delta_index'] * \
@@ -160,7 +160,7 @@ def subwavelength_grating(
     gc_to_bus_taper_cutout.y=silicon_stuff.y
     gc_to_bus_taper_cutout.xmin=silicon_stuff.xmax
 
-    grating_coupler.write_gds('grating_coupler_check.gds', unit=1e-9, precision=1e-12)
+    # grating_coupler.write_gds('grating_coupler_check.gds', unit=1e-9, precision=1e-12)
 
     #define and add holes air cutout
     GC_pad_side_cutout_path = pp.straight(length=grating_holes.xsize)
