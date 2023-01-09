@@ -113,9 +113,9 @@ if __name__ == "__main__":
     # num_tethers_sweep = [1,2,4,10]
     # min_num_tethers = 1
     # max_num_tethers = 10
-    min_num_tethers = 3
-    max_num_tethers = 5
-    num_tethers_sweep = numpy.arange(min_num_tethers,max_num_tethers,2)
+    min_num_tethers = 2
+    max_num_tethers = 4
+    num_tethers_sweep = numpy.arange(min_num_tethers,max_num_tethers+1,1)
     print('num tethers sweep' + str(num_tethers_sweep))
 
     # GC_taper_min_x = 20000
@@ -139,12 +139,12 @@ if __name__ == "__main__":
                     for phc_chip_scale_index in range(num_PhC_center_sweep):
                         # print('gc taper len' + str(gc_taper_len))
                         single_device = generate_single_device(GC_scale,phc_freq_scalings[phc_chip_scale_index],phc_freq_scalings[phc_chip_scale_index+2],num_tethers,num_phc_sweep,gc_taper_len)
-                        label_device_param_sweep = 'phc center = ' + str(round(numpy.mean([phc_freq_scalings[phc_chip_scale_index],phc_freq_scalings[phc_chip_scale_index+2]]),4)) + '\nGC scale = ' + str(GC_scale)
+                        label_device_param_sweep = 'phc center = ' + str(round(numpy.mean([phc_freq_scalings[phc_chip_scale_index],phc_freq_scalings[phc_chip_scale_index+2]]),4)) + '\nGC scale = ' + str(GC_scale) + '\nnum tethers = ' + str(num_tethers)
                         print(label_device_param_sweep)
                         # single_device.add_label(text=label_device_param_sweep,layer=GC_hole_layer,anchor='nw')
-                        label_text_ref = pg.text(text = label_device_param_sweep, size=2000, justify='left',layer=GC_hole_layer)
+                        label_text_ref = pg.text(text = label_device_param_sweep, size=4000, justify='left',layer=GC_hole_layer)
                         label_text = single_device << label_text_ref
-                        label_text.x = single_device.xmin
+                        label_text.xmin = single_device.xmin
                         label_text.ymin = single_device.ymax + 3*HF_undercut_propagation # 1 HF undercut propagation from either direction + 1 for buffer
                         gc_phc_param_sweep_devices.append(single_device)
 
@@ -162,7 +162,7 @@ if __name__ == "__main__":
     #get holes and GC together
     # pg.gridsweep()
 
-    grid_of_devices.write_gds('adding param labels for chip to chip sweep.gds',unit=1e-9,precision=1e-12)
+    grid_of_devices.write_gds('checking_num_tethers_smaller_sweep.gds',unit=1e-9,precision=1e-12)
     # single_device_check.write_gds('checking combined device.gds',unit=1e-9,precision=1e-12)
 
     # gdspy.LayoutViewer(lib)
